@@ -11,8 +11,7 @@ def get_arguments():
 	# Scrape + Verify Options
 	parser.add_argument("--scrape", action='store_true', dest='scrape', help='--scrape \nto scrape and build report of (links, images, form elements)')
 	parser.add_argument('--verify', action='store_true', dest='verify', help='--verify \nto verify scraped images and links)')
-	parser.add_argument('--user', "--username", action='store', dest='web_username', help='--user <username> (username for website)')
-	parser.add_argument('--pass', "--password", action='store_true', dest='web_password', help='--pass (will prompt you for website password)')
+	parser.add_argument('--user', "--username", action='store', dest='web_username', help='--user <username> (username for website, you will be prompted for password)')
 	arguments = parser.parse_args()
 	arguments.urls = list()
 	
@@ -37,13 +36,10 @@ def get_arguments():
 		arguments.scrape = True
 	elif arguments.verify:
 		arguments.scrape = True
-		
-	if (arguments.web_username and not arguments.web_password) or (arguments.web_password and not arguments.web_username):
-		parser.error("--user and --pass need to both be defined for web authentication")
-		exit()
-	elif arguments.web_password:
+	
+	if arguments.web_username:
 		arguments.web_password = getpass.getpass('Please enter your authentication\'s Password: ')
-		
+	
 	return arguments
 
 # def get_arguments(self):

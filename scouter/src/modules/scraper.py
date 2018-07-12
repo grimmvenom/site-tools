@@ -51,7 +51,10 @@ class Scrape:
 
 	def _scrape(self, url):
 		results = list()
-		page_source = self.base.get_source(url)  # GET Request to retrieve page source
+		if self.arguments.web_username and self.arguments.web_password:
+			page_source = self.base.get_source(url, str(self.arguments.web_username), str(self.arguments.web_password))  # GET Request to retrieve page source
+		else:
+			page_source = self.base.get_source(url)  # GET Request to retrieve page source
 		soup = BeautifulSoup(page_source, 'html.parser')
 		# print("URL: " + str(url))
 		
@@ -69,36 +72,36 @@ class Scrape:
 						elements.append({'tag': str(tag), 'value': t})
 			
 			# print(str(element_tags) + " tags found: " + str(len(elements)))
-			# print("\n")
-			for x in range(0, len(elements) - 1):
+			# print(elements)
+			for x, y in enumerate(elements):
 				tag = elements[x]['tag']
 				element = elements[x]['value']
 				element_log = dict()
-				if attributes:
-					for attribute in attributes:
-						try:
-							# print("scraping " + str(attribute))
-							temp = element[attribute]
-							if isinstance(temp, list):
-								temp = temp[0]
-							if attribute in ['href', 'src']:
-								if temp.startswith("https://") or temp.startswith("http://"):
-									element_log['target_url'] = temp
-								elif temp.startswith("//"):
-									element_log['target_url'] = self.base.get_protocol(url) + temp
-								elif temp.startswith("/"):
-									element_log['target_url'] = str(self.base.get_site_root(url)) + temp
-								elif temp.startswith('data:'):
-									pass
-								elif temp.startswith('java'):
-									pass
-								elif temp.startswith('#'):
-									pass
-								else:
-									pass
-							element_log[str(attribute)] = str(temp)
-						except:
-							pass
+				for attribute in attributes:
+					try:
+						# print("scraping " + str(attribute))
+						temp = element[attribute]
+						if isinstance(temp, list):
+							temp = temp[0]
+						if attribute in ['href', 'src']:
+							if temp.startswith("https://") or temp.startswith("http://"):
+								element_log['target_url'] = temp
+							elif temp.startswith("//"):
+								element_log['target_url'] = self.base.get_protocol(url) + temp
+							elif temp.startswith("/"):
+								element_log['target_url'] = str(self.base.get_site_root(url)) + temp
+							elif temp.startswith('data:'):
+								pass
+							elif temp.startswith('java'):
+								pass
+							elif temp.startswith('#'):
+								pass
+							else:
+								pass
+						
+						element_log[str(attribute)] = str(temp)
+					except:
+						pass
 					
 				result = {'url': str(url),
 						'elementType': str(element_type),

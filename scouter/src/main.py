@@ -6,8 +6,11 @@ Update:
 		Scouter being separated into modules to be used independently so scouter can function
 		as the eyes of Ivan and still perform it's tasks. All output will be in JSON and html
 
-original author: grimm venom <grimmvenom@gmail.com>
-refactored: Dakota Carter <
+author:
+grimm venom <grimmvenom@gmail.com>
+
+refactored:
+Dakota Carter <dakota22789@gmail.com>
 
 
 """
@@ -32,7 +35,7 @@ class Scouter:
 			scraper = Scrape(self.arguments)  # Set Variables in scraper.py
 			self.scouter_log = scraper.main()  # Scrape content and return dictionary
 			if self.arguments.verify:
-				verifier = Verify(self.scouter_log)  # Define Verifier
+				verifier = Verify(self.scouter_log, self.arguments)  # Define Verifier
 				verified_data = verifier.main()  # Run Verifier Method
 				logger.write_log(verified_data, 'verifiedInfo')  # Write Log to File
 			else:

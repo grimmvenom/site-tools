@@ -6,7 +6,8 @@ from src.base.base import Base
 
 class Verify:
 
-	def __init__(self, log):
+	def __init__(self, log, arguments):
+		self.arguments = arguments
 		self.log = log.copy()
 		self.base = Base()
 
@@ -46,7 +47,10 @@ class Verify:
 		# print([element_url, element_type, element_index])
 		url = request[3]['target_url']
 		try:
-			response = self.base.get_response(url)
+			if self.arguments.web_username and self.arguments.web_password:
+				response = self.base.get_response(url, str(self.arguments.web_username), str(self.arguments.web_password))
+			else:
+				response = self.base.get_response(url)
 			
 			element_data['status'] = response.status
 			element_data['message'] = response.reason
@@ -56,9 +60,11 @@ class Verify:
 			element_data['message'] = str(e)
 			
 		except Exception as e:
-			print(e)
-			print("Failure @: " + str(element_url) + ", " + str(element_type) + ", " + str(element_index))
-		
+			element_data['status'] = "ERROR"
+			element_data['message'] = "Request Error"
+			print("Error: \n" + str(e))
+			print("\nFailure @: " + str(element_url) + ", " + str(element_type) + ", " + str(element_index))
+			print("\n")
 		# print([element_url, element_type, element_index, element_data])
 		return [element_url, element_type, element_index, element_data]
 		# self.log[url][element_type][element_index] = element_data

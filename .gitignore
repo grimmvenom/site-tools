@@ -6,3 +6,5 @@ url-status/files/BSR-Ford-Origin_A.txt
 url-status/files/BSR-Ford-US.txt
 url-status/files/test.txt
 .DS_Store
+sitemap/config/Resources/testcrawl/testcrawl/__init__.py
+sitemap/config/Resources/testcrawl/testcrawl/spiders/__init__.py

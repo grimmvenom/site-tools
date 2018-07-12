@@ -1,6 +1,6 @@
 import platform, os, sys, urllib3, re, sqlite3, time, json
 import multiprocessing
-
+import base64
 
 class Base:
 	
@@ -50,17 +50,31 @@ class Base:
 			else:
 				self.scouter_log[key] = value
 
-	def get_response(self, url):
+	def get_response(self, url, username="", password=""):
 		pool = urllib3.PoolManager()
 		urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-		response = pool.urlopen('HEAD', url, timeout=self.timeout)
+		if username and password:
+			creds = username + ":" + password
+			# creds = username + ":" + base64.b64encode(bytes(password, 'utf-8'))
+			headers = urllib3.make_headers(basic_auth=creds)
+			response = pool.urlopen('HEAD', url, headers=headers, timeout=self.timeout)
+		else:
+			response = pool.urlopen('HEAD', url, timeout=self.timeout)
 		return response
 
-	def get_source(self, url):
+	def get_source(self, url, username="", password=""):
 		print("Requesting: " + str(url))
 		pool = urllib3.PoolManager()
 		urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-		response = pool.urlopen('GET', url, timeout=self.timeout)
+		if username and password:
+			creds = username + ":" + password
+			# creds = username + ":" + base64.b64encode(bytes(password, 'utf-8'))
+			headers = urllib3.make_headers(basic_auth=creds)
+			response = pool.urlopen('GET', url, headers=headers, timeout=self.timeout)
+		else:
+			response = pool.urlopen('GET', url, timeout=self.timeout)
+			
+		# print(response.data)
 		return str(response.data)
 
 	def get_protocol(self, url):
