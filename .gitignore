@@ -1,0 +1,8 @@
+
+*.pyc
+sitemap/.DS_Store
+url-status/.DS_Store
+url-status/files/BSR-Ford-Origin_A.txt
+url-status/files/BSR-Ford-US.txt
+url-status/files/test.txt
+.DS_Store
