@@ -18,6 +18,7 @@ from src.modules.scraper import Scrape
 from src.modules.verifier import Verify
 from src.base.base import Base
 from src.base.get_arguments import get_arguments
+import multiprocessing
 import json
 
 class Scouter:
@@ -49,6 +50,7 @@ class Scouter:
 
 
 if __name__ == '__main__':
+	multiprocessing.freeze_support()
 	arguments = get_arguments()
 	Scouter(arguments)
 

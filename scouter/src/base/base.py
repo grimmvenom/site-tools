@@ -1,8 +1,8 @@
-import platform, os, sys, urllib3, re, sqlite3, time, json, requests
+import platform, os, sys, re, sqlite3, time, json, requests
 import urllib.parse
 import multiprocessing
-import base64
-from lxml.html import fromstring
+# from lxml.html import fromstring
+from bs4 import BeautifulSoup
 from http.client import responses
 
 
@@ -74,10 +74,12 @@ class Base:
 			
 			page_source = str(response.content)
 			try:
+				html = BeautifulSoup(page_source, 'html.parser')
+				page_title = html.title.text
 				# page_title = re.search('(?<=<title>).+?(?=</title>)', response.content, re.DOTALL).group().strip()
-				tree = fromstring(response.content)
 				# p = re.compile(r'<.*?>')
-				page_title = str(tree.findtext('.//title')).replace("\n", "").replace('\r', '')
+				# tree = fromstring(response.content)
+				# page_title = str(tree.findtext('.//title')).replace("\n", "").replace('\r', '')
 				page_title = urllib.parse.unquote(page_title)
 				request_response["pageTitle"] = str(page_title)
 			except:

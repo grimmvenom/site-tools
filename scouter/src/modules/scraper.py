@@ -21,7 +21,7 @@ class Scrape:
 		self.scrape_results = dict()
 		self.sorted_results = dict()
 		manager = multiprocessing.Manager()
-		multiprocessing.freeze_support()
+		
 
 	def main(self):
 		self._worker(self.urls)

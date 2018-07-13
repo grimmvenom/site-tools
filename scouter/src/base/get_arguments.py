@@ -61,21 +61,11 @@ def get_arguments():
 	
 	return arguments
 
-# def get_arguments(self):
-# 	# Define Arguments the Script will accept
-# 	parser = argparse.ArgumentParser()
-#
-# 	parser.add_argument('-base', "--base", action='store', dest='base_url', help='base url for all urls in file')
-# 	parser.add_argument('-o', "--option", action='append', dest='options',
-# 	                    help='Options: ' + str(dict_acceptable_options["all"]))
 
 # 	parser.add_argument('-db', "--database", action='store', dest='db',
 # 	                    help='Determine Which database to lookup information in')
 # 	parser.add_argument('-q', "--query", "--sql", action='store', dest='query',
 # 	                    help='SQL Query to check the <project>_sitemap table in automation.db')
-#
-
-#
 # 	# Extra Test Case Functionality for executing test cases mapped in table
 # 	parser.add_argument('-hi', "--hubip", "--hubIP", action='store', dest='hubIP',
 # 	                    help='IP of Selenium Hub Server. (ex: 10.128.194.170 (which is prod)')
@@ -85,30 +75,6 @@ def get_arguments():
 # 	                    dest='svncredentials',
 # 	                    help='SVN Credentials (<username>:<password>). Required for executing Component Tests stored in SVN')
 # 	# End of Extra Test Case Functionality
-#
-# 	arguments = parser.parse_args()
-# 	# If no url arguments defined, fail with error
-# 	if not (arguments.file or arguments.urls or arguments.query or arguments.db):
-# 		parser.error('No action requested, add -u <url> or -q <sql query> or -f <file>')
-#
-# 	# if SVN creds specified
-# 	if (arguments.svncredentials):
-# 		arguments.svn_username = arguments.svncredentials.split(":", 1)[0]  # SVN Username
-# 		arguments.svn_password = arguments.svncredentials.split(":", 1)[1]  # SVN Password
-# 	else:
-# 		arguments.svn_username = ""
-# 		arguments.svn_password = ""
-#
-# 	if (arguments.file):
-# 		with open(arguments.file, 'r') as f:
-# 			file_urls = f.readlines()
-# 			file_urls = [s.replace('\r', '').replace('\n', '') for s in file_urls]  # remove all the 8s
-# 		for file_url in file_urls:  # Convert from list to string and append to url list
-# 			urls.append(file_url)
-#
-# 	if (arguments.urls):
-# 		for url in arguments.urls:  # Convert from list to string and append to url list
-# 			urls.append(url)
 #
 # 	if (arguments.db):
 # 		try:
