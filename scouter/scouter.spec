@@ -4,11 +4,11 @@ block_cipher = None
 
 
 a = Analysis(['scouter.py'],
-             pathex=['../scooter'],
+             pathex=['/Users/nick.serra/Scripts/python/QA/site-tools/git-site-tools/scouter'],
              binaries=[],
              datas=[],
              hiddenimports=[],
-             hookspath=[''],
+             hookspath=[],
              runtime_hooks=[],
              excludes=[],
              win_no_prefer_redirects=False,
@@ -26,4 +26,8 @@ exe = EXE(pyz,
           strip=False,
           upx=True,
           runtime_tmpdir=None,
-          console=True )
+          console=False )
+app = BUNDLE(exe,
+             name='scouter.app',
+             icon=None,
+             bundle_identifier=None)

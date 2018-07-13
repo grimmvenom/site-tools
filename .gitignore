@@ -8,3 +8,7 @@ url-status/files/test.txt
 .DS_Store
 sitemap/config/Resources/testcrawl/testcrawl/__init__.py
 sitemap/config/Resources/testcrawl/testcrawl/spiders/__init__.py
+
+scouter/dist/
+
+scouter/build/

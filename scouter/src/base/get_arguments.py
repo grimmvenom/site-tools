@@ -7,14 +7,17 @@ def get_arguments():
 	parser = argparse.ArgumentParser()
 	parser.add_argument('-u', "--url", action='append', dest='url', help='http://<url> or https://<URL>')
 	parser.add_argument('-f', "--file", action='store', dest='file', help='.txt file to import a list of urls from. One URL per line. Include http:// or https://')
+	parser.add_argument('-base', "--base", action='store', dest='base_url', help='base url to be prepended to urls without specified base url or don\'t start with http(s)://')
+	parser.add_argument('-user', "--username", action='store', dest='web_username', help='--user <username> (username for website, you will be prompted for password)')
 	
 	# Scrape + Verify Options
 	parser.add_argument("--scrape", action='store_true', dest='scrape', help='--scrape \nto scrape and build report of (links, images, form elements)')
 	parser.add_argument('--verify', action='store_true', dest='verify', help='--verify \nto verify scraped images and links)')
-	parser.add_argument('--user', "--username", action='store', dest='web_username', help='--user <username> (username for website, you will be prompted for password)')
+	
 	arguments = parser.parse_args()
 	arguments.urls = list()
 	
+	print("\n")
 	try:
 		arguments.urls = list(arguments.url)
 	except:
@@ -31,6 +34,21 @@ def get_arguments():
 	if len(arguments.urls) < 1:
 		parser.error("You must specify a url with the (-u) flag or specify a .txt filepath with 1 url per line with the (-f) flag")
 		exit()
+		
+	if arguments.base_url:
+		if arguments.base_url.endswith("/"):
+			arguments.base_url = arguments.base_url.replace('/', '', 1)[-1]
+			if not arguments.base_url.startswith('http://') and not arguments.base_url.startswith('https://'):
+				arguments.base_url = "http://" + arguments.base_url
+		print("Base URL: " + str(arguments.base_url))
+		for index, url in enumerate(arguments.urls):
+			if not url.startswith(arguments.base_url):
+				if not url.startswith('http://') and not url.startswith('https://'):
+					if url.startswith("/"):
+						url = arguments.base_url + url
+					else:
+						url = arguments.base_url + "/" + url
+					arguments.urls[index] = url
 	
 	# Ensure Scrape and Verify Flags work together
 	if not arguments.scrape or arguments.verify:
