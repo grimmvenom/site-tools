@@ -52,9 +52,9 @@ class Scrape:
 	def _scrape(self, url):
 		results = list()
 		if self.arguments.web_username and self.arguments.web_password:
-			page_source = self.base.get_source(url, str(self.arguments.web_username), str(self.arguments.web_password))  # GET Request to retrieve page source
+			response, page_source = self.base.get_response(url, str(self.arguments.web_username), str(self.arguments.web_password))  # GET Request to retrieve page source
 		else:
-			page_source = self.base.get_source(url)  # GET Request to retrieve page source
+			response, page_source = self.base.get_response(url)  # GET Request to retrieve page source
 		soup = BeautifulSoup(page_source, 'html.parser')
 		# print("URL: " + str(url))
 		

@@ -1,6 +1,10 @@
-import platform, os, sys, urllib3, re, sqlite3, time, json
+import platform, os, sys, urllib3, re, sqlite3, time, json, requests
+import urllib.parse
 import multiprocessing
 import base64
+from lxml.html import fromstring
+from http.client import responses
+
 
 class Base:
 	
@@ -51,31 +55,40 @@ class Base:
 				self.scouter_log[key] = value
 
 	def get_response(self, url, username="", password=""):
-		pool = urllib3.PoolManager()
-		urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-		if username and password:
-			creds = username + ":" + password
-			# creds = username + ":" + base64.b64encode(bytes(password, 'utf-8'))
-			headers = urllib3.make_headers(basic_auth=creds)
-			response = pool.urlopen('HEAD', url, headers=headers, timeout=self.timeout)
-		else:
-			response = pool.urlopen('HEAD', url, timeout=self.timeout)
-		return response
-
-	def get_source(self, url, username="", password=""):
-		print("Requesting: " + str(url))
-		pool = urllib3.PoolManager()
-		urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-		if username and password:
-			creds = username + ":" + password
-			# creds = username + ":" + base64.b64encode(bytes(password, 'utf-8'))
-			headers = urllib3.make_headers(basic_auth=creds)
-			response = pool.urlopen('GET', url, headers=headers, timeout=self.timeout)
-		else:
-			response = pool.urlopen('GET', url, timeout=self.timeout)
+		# print("Requesting: " + str(url))
+		request_response = {}
+		try:
+			if username and password:
+				# Perform Get Request of url with authentication to gather info
+				response = requests.get(url, auth=(username, password), stream=True, allow_redirects=True, timeout=self.timeout)
+			else:
+				response = requests.get(url, stream=True, allow_redirects=True, timeout=self.timeout)
 			
-		# print(response.data)
-		return str(response.data)
+			if response.history:
+				request_response["status"] = str(response.history[0].status_code)
+				request_response["message"] = str(responses[int(request_response["status"])])  # Set Message based on Link Status
+				request_response["redirectedURL"] = str(response.url)
+			else:
+				request_response["status"] = response.status_code
+				request_response["message"] = str(responses[int(request_response["status"])])  # Set Message based on Link Status
+			
+			page_source = str(response.content)
+			try:
+				# page_title = re.search('(?<=<title>).+?(?=</title>)', response.content, re.DOTALL).group().strip()
+				tree = fromstring(response.content)
+				# p = re.compile(r'<.*?>')
+				page_title = str(tree.findtext('.//title')).replace("\n", "").replace('\r', '')
+				page_title = urllib.parse.unquote(page_title)
+				request_response["pageTitle"] = str(page_title)
+			except:
+				request_response["pageTitle"] = ""
+		
+		except requests.exceptions.Timeout as e:
+			request_response['status'] = 408
+			request_response['message'] = str(e)
+			request_response['pageTitle'] = "N/A"
+			page_source = ""
+		return request_response, page_source
 
 	def get_protocol(self, url):
 		return re.findall('(?i)(https?:)', url)[0]
