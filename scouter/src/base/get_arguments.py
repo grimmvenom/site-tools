@@ -24,7 +24,8 @@ def get_arguments():
 		f = open(arguments.file, 'r')
 		file_urls = f.read().splitlines(keepends=False)
 		for url in file_urls:
-			arguments.urls.append(url)
+			if len(url) > 2:
+				arguments.urls.append(url)
 	
 	# If List of Urls is not at least 1, exit
 	if len(arguments.urls) < 1:
