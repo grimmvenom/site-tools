@@ -34,6 +34,10 @@ class Scouter:
 		logger = Base()
 		start_time = time.time()
 		
+		if self.arguments.exclude:
+			print(self.arguments.exclude)
+			print("\n")
+
 		if self.arguments.status:
 			from src.modules.status import Status
 			url_status = Status(self.arguments)  # Set Variables in status.py
@@ -51,7 +55,7 @@ class Scouter:
 			else:
 				logger.write_log(self.scouter_log, 'scrapedInfo')  # Write Scraped Dictionary to File
 				# z = self.merge_two_dicts(self.scouter_log, temp)
-			
+		
 		end_time = '{:.2f}'.format((time.time() - start_time))
 		print("\nTotal Runtime: " + str(end_time) + " (seconds)\n")
 		

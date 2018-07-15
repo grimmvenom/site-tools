@@ -3,7 +3,6 @@
 import platform, os, sys, re, sqlite3, time, json, requests
 import urllib.parse
 import multiprocessing
-# from lxml.html import fromstring
 from bs4 import BeautifulSoup
 from http.client import responses
 
@@ -78,10 +77,6 @@ class Base:
 			
 			try:
 				html = BeautifulSoup(page_source, 'html.parser')
-				# page_title = re.search('(?<=<title>).+?(?=</title>)', response.content, re.DOTALL).group().strip()
-				# p = re.compile(r'<.*?>')
-				# tree = fromstring(response.content)
-				# page_title = str(tree.findtext('.//title')).replace("\n", "").replace('\r', '')
 				page_title = html.title.text
 				page_title = urllib.parse.unquote(page_title)  # Decode text in url format
 				page_title = self.unicodetoascii(page_title)  # Decode unicode to ascii

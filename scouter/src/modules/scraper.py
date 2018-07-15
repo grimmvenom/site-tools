@@ -22,11 +22,13 @@ class Scrape:
 		self.base = Base()
 		self.scrape_results = dict()
 		self.sorted_results = dict()
+		self.scraped_total = 0
 		manager = multiprocessing.Manager()
 
 	def main(self):
 		self._worker(self.urls)
 		self._sort_dict()
+		print("total scraped results: " + str(self.scraped_total) + "\n")
 		return self.sorted_results
 
 	def _worker(self, urls):
@@ -36,6 +38,7 @@ class Scrape:
 			# queue = dict(pair for d in results for pair in d.items())  # convert the returned list to dictionary
 		for result in results:
 			for item in result:
+				self.scraped_total += 1
 				element_url = str(item['url'])
 				element_type = str(item['elementType'])
 				element_index = str(item['index'])
@@ -49,9 +52,11 @@ class Scrape:
 				if element_index not in element_results[element_url][element_type]:  # If Element Results not exist, create it
 					element_results[element_url][element_type][element_index] = element_data
 			self.scrape_results = element_results  # Set Class Log to element_results dictionary
-
+	
 	def _scrape(self, url):
 		results = list()
+		manual = ('java', '#', 'data:')
+		print("Scraping data from: " + str(url))
 		if self.arguments.web_username and self.arguments.web_password:
 			response, page_source = self.base.get_response(url, True, str(self.arguments.web_username), str(self.arguments.web_password))  # GET Request to retrieve page source
 		else:
@@ -59,7 +64,6 @@ class Scrape:
 		soup = BeautifulSoup(page_source, 'html.parser')
 		# print("URL: " + str(url))
 		
-		print("Scraping data from: " + str(url))
 		for index, type in enumerate(ScrapeRequirements):
 			element_type = str(type).split(".", 1)[1].lower()
 			# print("Checking " + str(element_type) + " on: " + str(url))
@@ -91,11 +95,7 @@ class Scrape:
 								element_log['target_url'] = self.base.get_protocol(url) + temp
 							elif temp.startswith("/"):
 								element_log['target_url'] = str(self.base.get_site_root(url)) + temp
-							elif temp.startswith('data:'):
-								pass
-							elif temp.startswith('java'):
-								pass
-							elif temp.startswith('#'):
+							elif temp.startswith(manual):
 								pass
 							else:
 								pass
@@ -123,15 +123,34 @@ class Scrape:
 						result['data']['text'] = Base.unicodetoascii(new_text)
 					except:
 						pass
-				results.append(result)
-		# print(results)
-		# self.log[url] = self.scrape_log._getvalue()
-		# 	self.verify(element_log, x)
+				
+				# Domain URL Filters
+				if self.arguments.limit:
+					if 'target_url' in result['data']:
+						target_domain = self.base.get_site_root(result['data']['target_url'])
+						protocol = self.base.get_protocol(target_domain)
+						# target_domain = target_domain.replace(protocol, '')
+						if target_domain in self.arguments.limit:
+							results.append(result)
+					else:
+						results.append(result)
+				elif self.arguments.exclude:
+					if 'target_url' in result['data']:
+						target_domain = self.base.get_site_root(result['data']['target_url'])
+						protocol = self.base.get_protocol(target_domain)
+						# target_domain = target_domain.replace(protocol, '')
+						if not target_domain in self.arguments.exclude:
+							results.append(result)
+							# print("Excluding link: " + str(result['data']['target_url']))
+					else:
+						results.append(result)
+				else:
+					results.append(result)
 		return results
 	
 	def _sort_dict(self):
 		# logger = self.base
-		print("\nSorting Scraped Results\n")
+		print("Sorting Scraped Results")
 		verifiable = ['images', 'links']
 		for url_key in self.scrape_results.keys():  # Sort Through URLs dictionary and organize it
 			for et_key, et_value in self.scrape_results[url_key].items():  # Sort Through Element Types (images, links, forms, etc)

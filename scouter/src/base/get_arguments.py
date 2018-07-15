@@ -7,21 +7,23 @@ import base64
 def get_arguments():
 
 	parser = argparse.ArgumentParser()
-	parser.add_argument('-u', "--url", action='append', dest='url', help='http://<url> or https://<URL>')
-	parser.add_argument('-f', "--file", action='store', dest='file', help='.txt file to import a list of urls from. One URL per line. Include http:// or https://')
-	parser.add_argument('-base', "--base", action='store', dest='base_url', help='base url to be prepended to urls without specified base url or don\'t start with http(s)://')
-	parser.add_argument('-user', "--username", "--webuser", action='store', dest='web_username', help='--user <username> (username for website, you will be prompted for password)')
+	parser.add_argument('-u', "-url", action='append', dest='url', help='-u <url> \thttp://<url> or https://<URL>')
+	parser.add_argument('-f', "-file", action='store', dest='file', help=' -f <filepath.txt> \n.txt file to import a list of urls from. One URL per line. Include http:// or https://')
+	parser.add_argument('-base', action='store', dest='base_url', help='-base "http://www.google.com" \nbase url to be prepended to urls without specified base url or don\'t start with http(s)://')
+	parser.add_argument('-user', "-username", "-webuser", action='store', dest='web_username', help='--user <username> \nusername for website, you will be prompted for password')
 	
 	# Option to check url status
-	parser.add_argument('--status', action='store_true', dest='status', help='--status \nto verify urls are available')
+	parser.add_argument('-status', action='store_true', dest='status', help='-status \nto verify urls are available')
 	# Scrape + Verify Options
-	parser.add_argument("--scrape", action='store_true', dest='scrape', help='--scrape \nto scrape and build report of (links, images, form elements)')
-	parser.add_argument('--verify', action='store_true', dest='verify', help='--verify \nto verify scraped images and links)')
-	
+	parser.add_argument("-scrape", action='store_true', dest='scrape', help='-scrape \nto scrape and build report of (links, images, form elements')
+	parser.add_argument('-verify', action='store_true', dest='verify', help='-verify \nto verify scraped images and links')
+	parser.add_argument('--limit', action='append', dest='limit', help='--limit <domain> \nto only check content with specified domain')
+	parser.add_argument('--exclude', action='append', dest='exclude', help='--exclude <domain> \nSpecific domains to ignore content for')
 	arguments = parser.parse_args()
 	arguments.urls = list()
 	
 	print("\n")
+	
 	try:
 		arguments.urls = list(arguments.url)
 	except:
@@ -80,8 +82,7 @@ def get_arguments():
 # 	parser.add_argument('-b', "--browser", action='append', dest='browsers',
 # 	                    help='Select Browsers to test in selenium. options: firefox, chrome, ie, standard3')
 # 	parser.add_argument('-sc', "--svncreds", "--svncredentials", "--svncreds", action='store',
-# 	                    dest='svncredentials',
-# 	                    help='SVN Credentials (<username>:<password>). Required for executing Component Tests stored in SVN')
+# 	                    dest='svncredentials', help='SVN Credentials (<username>:<password>). Required for executing Component Tests stored in SVN')
 # 	# End of Extra Test Case Functionality
 #
 # 	if (arguments.db):
