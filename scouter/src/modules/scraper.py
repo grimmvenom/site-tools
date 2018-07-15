@@ -21,7 +21,6 @@ class Scrape:
 		self.scrape_results = dict()
 		self.sorted_results = dict()
 		manager = multiprocessing.Manager()
-		
 
 	def main(self):
 		self._worker(self.urls)
@@ -52,9 +51,9 @@ class Scrape:
 	def _scrape(self, url):
 		results = list()
 		if self.arguments.web_username and self.arguments.web_password:
-			response, page_source = self.base.get_response(url, str(self.arguments.web_username), str(self.arguments.web_password))  # GET Request to retrieve page source
+			response, page_source = self.base.get_response(url, True, str(self.arguments.web_username), str(self.arguments.web_password))  # GET Request to retrieve page source
 		else:
-			response, page_source = self.base.get_response(url)  # GET Request to retrieve page source
+			response, page_source = self.base.get_response(url, True)  # GET Request to retrieve page source
 		soup = BeautifulSoup(page_source, 'html.parser')
 		# print("URL: " + str(url))
 		
@@ -167,8 +166,3 @@ class Scrape:
 								value['original_scraped_index'] = int(index)
 								self.sorted_results[url_key][str(et_key)][x] = value
 		# logger.write_log(self.sorted_results, 'verifiedInfo')
-
-
-if __name__ == '__main__':
-	urls = ['https://www.ford.com', 'https://www.ford.com/cars/fiesta/gallery/']
-	Scrape(urls)

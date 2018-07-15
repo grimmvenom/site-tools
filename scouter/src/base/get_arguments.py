@@ -10,6 +10,8 @@ def get_arguments():
 	parser.add_argument('-base', "--base", action='store', dest='base_url', help='base url to be prepended to urls without specified base url or don\'t start with http(s)://')
 	parser.add_argument('-user', "--username", action='store', dest='web_username', help='--user <username> (username for website, you will be prompted for password)')
 	
+	# Option to check url status
+	parser.add_argument('--status', action='store_true', dest='status', help='--status \nto verify urls are available')
 	# Scrape + Verify Options
 	parser.add_argument("--scrape", action='store_true', dest='scrape', help='--scrape \nto scrape and build report of (links, images, form elements)')
 	parser.add_argument('--verify', action='store_true', dest='verify', help='--verify \nto verify scraped images and links)')

@@ -57,9 +57,9 @@ class Verify:
 		# print([element_url, element_type, element_index])
 		try:
 			if self.arguments.web_username and self.arguments.web_password:
-				response, page_source = self.base.get_response(url, str(self.arguments.web_username), str(self.arguments.web_password))
+				response = self.base.get_response(url, False, str(self.arguments.web_username), str(self.arguments.web_password))
 			else:
-				response, page_source = self.base.get_response(url)
+				response = self.base.get_response(url)
 			
 			response_data["status"] = int(response["status"])
 			try:

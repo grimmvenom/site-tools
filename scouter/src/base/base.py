@@ -54,7 +54,7 @@ class Base:
 			else:
 				self.scouter_log[key] = value
 
-	def get_response(self, url, username="", password=""):
+	def get_response(self, url, source=False, username="", password=""):
 		# print("Requesting: " + str(url))
 		request_response = {}
 		try:
@@ -73,6 +73,7 @@ class Base:
 				request_response["message"] = str(responses[int(request_response["status"])])  # Set Message based on Link Status
 			
 			page_source = str(response.content)
+			
 			try:
 				html = BeautifulSoup(page_source, 'html.parser')
 				page_title = html.title.text
@@ -90,7 +91,10 @@ class Base:
 			request_response['message'] = str(e)
 			request_response['pageTitle'] = "N/A"
 			page_source = ""
-		return request_response, page_source
+		if source:
+			return request_response, page_source
+		else:
+			return request_response
 
 	def get_protocol(self, url):
 		return re.findall('(?i)(https?:)', url)[0]

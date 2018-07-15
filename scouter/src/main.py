@@ -14,8 +14,7 @@ Dakota Carter <dakota22789@gmail.com>
 
 
 """
-from src.modules.scraper import Scrape
-from src.modules.verifier import Verify
+
 from src.base.base import Base
 from src.base.get_arguments import get_arguments
 import multiprocessing
@@ -26,16 +25,24 @@ class Scouter:
 		# Global Variables
 		self.arguments = arguments
 		self.urls = arguments.urls
+		self.status_log = dict()
 		self.scouter_log = dict()
 		self.main()
 
 	def main(self):
 		logger = Base()
 		
-		if self.arguments.scrape:
+		if self.arguments.status:
+			from src.modules.status import Status
+			url_status = Status(self.arguments)  # Set Variables in status.py
+			self.status_log = url_status.main()  # Request all unique urls and get a list of statuses
+			logger.write_log(self.status_log, 'statusCheck')  # Write Log to File
+		elif self.arguments.scrape:
+			from src.modules.scraper import Scrape
 			scraper = Scrape(self.arguments)  # Set Variables in scraper.py
 			self.scouter_log = scraper.main()  # Scrape content and return dictionary
 			if self.arguments.verify:
+				from src.modules.verifier import Verify
 				verifier = Verify(self.scouter_log, self.arguments)  # Define Verifier
 				verified_data = verifier.main()  # Run Verifier Method
 				logger.write_log(verified_data, 'verifiedInfo')  # Write Log to File
