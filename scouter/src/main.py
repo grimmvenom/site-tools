@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Summary:
 		Script to scan urls for links, inpage links, verify links, and components
@@ -18,7 +19,7 @@ Dakota Carter <dakota22789@gmail.com>
 from src.base.base import Base
 from src.base.get_arguments import get_arguments
 import multiprocessing
-import json
+import json, time
 
 class Scouter:
 	def __init__(self, arguments):
@@ -31,13 +32,14 @@ class Scouter:
 
 	def main(self):
 		logger = Base()
+		start_time = time.time()
 		
 		if self.arguments.status:
 			from src.modules.status import Status
 			url_status = Status(self.arguments)  # Set Variables in status.py
 			self.status_log = url_status.main()  # Request all unique urls and get a list of statuses
 			logger.write_log(self.status_log, 'statusCheck')  # Write Log to File
-		elif self.arguments.scrape:
+		if self.arguments.scrape:
 			from src.modules.scraper import Scrape
 			scraper = Scrape(self.arguments)  # Set Variables in scraper.py
 			self.scouter_log = scraper.main()  # Scrape content and return dictionary
@@ -49,6 +51,9 @@ class Scouter:
 			else:
 				logger.write_log(self.scouter_log, 'scrapedInfo')  # Write Scraped Dictionary to File
 				# z = self.merge_two_dicts(self.scouter_log, temp)
+			
+		end_time = '{:.2f}'.format((time.time() - start_time))
+		print("\nTotal Runtime: " + str(end_time) + " (seconds)\n")
 		
 	def merge_two_dicts(self, x, y):
 		z = x.copy()  # start with x's keys and values

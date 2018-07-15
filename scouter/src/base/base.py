@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import platform, os, sys, re, sqlite3, time, json, requests
 import urllib.parse
 import multiprocessing
@@ -76,12 +78,13 @@ class Base:
 			
 			try:
 				html = BeautifulSoup(page_source, 'html.parser')
-				page_title = html.title.text
 				# page_title = re.search('(?<=<title>).+?(?=</title>)', response.content, re.DOTALL).group().strip()
 				# p = re.compile(r'<.*?>')
 				# tree = fromstring(response.content)
 				# page_title = str(tree.findtext('.//title')).replace("\n", "").replace('\r', '')
-				page_title = urllib.parse.unquote(page_title)
+				page_title = html.title.text
+				page_title = urllib.parse.unquote(page_title)  # Decode text in url format
+				page_title = self.unicodetoascii(page_title)  # Decode unicode to ascii
 				request_response["pageTitle"] = str(page_title)
 			except:
 				request_response["pageTitle"] = ""
@@ -148,3 +151,37 @@ class Base:
 		else:
 			print("Directory already exists.")
 
+	def unicodetoascii(self, string):
+		# print("Replacing Characters")
+		uni2ascii = {
+			'\\xc2\\xae': '®',
+			'\\u00ae': '®',
+			'\\xe2\\x80\\x99': "'",
+			'\\xe2\\x80\\x9c': '"',
+			'\\xe2\\x80\\x9d': '"',
+			'\\xe2\\x80\\x9e': '"',
+			'\\xe2\\x80\\x9f': '"',
+			'\\xc3\\xa9': 'e',
+			'\\xe2\\x80\\x93': '-',
+			'\\xe2\\x80\\x92': '-',
+			'\\xe2\\x80\\x94': '-',
+			'\\xe2\\x80\\x98': "'",
+			'\\xe2\\x80\\x9b': "'",
+			'\\xe2\\x80\\x90': '-',
+			'\\xe2\\x80\\x91': '-',
+			'\\xe2\\x80\\xb2': "'",
+			'\\xe2\\x80\\xb3': "'",
+			'\\xe2\\x80\\xb4': "'",
+			'\\xe2\\x80\\xb5': "'",
+			'\\xe2\\x80\\xb6': "'",
+			'\\xe2\\x80\\xb7': "'",
+			'\\xe2\\x81\\xba': "+",
+			'\\xe2\\x81\\xbb': "-",
+			'\\xe2\\x81\\xbc': "=",
+			'\\xe2\\x81\\xbd': "(",
+			'\\xe2\\x81\\xbe': ")",
+			'\\xe2\\x80\\x8e': '',
+		}
+		for uni, char in uni2ascii.items():
+			string = string.replace(uni, char)
+		return string

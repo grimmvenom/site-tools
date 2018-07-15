@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from bs4 import BeautifulSoup
 from src.base.base import Base
 import math, json
@@ -118,7 +120,7 @@ class Scrape:
 					text = str(element.text).replace("\\t", "").replace("\\r", "").replace("\\n", "").strip()  # Remove encoded characters
 					new_text = re.sub("\s{3,}", ",", text)
 					try:
-						result['data']['text'] = new_text
+						result['data']['text'] = Base.unicodetoascii(new_text)
 					except:
 						pass
 				results.append(result)
@@ -129,7 +131,7 @@ class Scrape:
 	
 	def _sort_dict(self):
 		# logger = self.base
-		print("\nSorting Data")
+		print("\nSorting Scraped Results\n")
 		verifiable = ['images', 'links']
 		for url_key in self.scrape_results.keys():  # Sort Through URLs dictionary and organize it
 			for et_key, et_value in self.scrape_results[url_key].items():  # Sort Through Element Types (images, links, forms, etc)

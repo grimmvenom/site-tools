@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 
 import json, multiprocessing, math, sys
 from multiprocessing import Pipe
@@ -18,18 +19,21 @@ class Verify:
 		return self.log
 	
 	def _unique_requests(self):
+		counter = 0
 		for url_key in self.log.keys():  # Loop Through URL Keys
 			for element_type in self.log[url_key].keys():  # Loop Through element type keys
 				if not element_type.startswith(('ignored_', 'forms')):  # Ignore some keys
 					for index, value in self.log[url_key][element_type].items():  # Append data to list
 						target_url = value['target_url']
+						counter += 1
 						if target_url not in self.unique_requests:
 							self.unique_requests.append(target_url)
 						# request_list.append([url_key, element_type, index, value])
-					
+		print("Total Target Urls: " + str(counter))
+	
 	def _worker(self):
-		print("Verifying Links")
-		print(str(len(self.unique_requests)) + " Unique URLs Found\n")
+		print("Unique Target Urls: " + str(len(self.unique_requests)))
+		print("Verifying Unique Targets\n")
 		with multiprocessing.Pool(processes=10) as pool:  # Start Multiprocessing pool
 			results = pool.map(self._verify, self.unique_requests)
 		# queue = dict(pair for d in results for pair in d.items())  # convert the returned list to dictionary

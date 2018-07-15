@@ -1,8 +1,7 @@
-from bs4 import BeautifulSoup
+# -*- coding: utf-8 -*-
+
 from src.base.base import Base
-import json, re
 import multiprocessing
-from src.modules.verifier import Verify
 
 
 class Status:

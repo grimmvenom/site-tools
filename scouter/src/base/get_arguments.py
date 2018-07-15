@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import argparse, re
 import getpass
 import base64
@@ -8,7 +10,7 @@ def get_arguments():
 	parser.add_argument('-u', "--url", action='append', dest='url', help='http://<url> or https://<URL>')
 	parser.add_argument('-f', "--file", action='store', dest='file', help='.txt file to import a list of urls from. One URL per line. Include http:// or https://')
 	parser.add_argument('-base', "--base", action='store', dest='base_url', help='base url to be prepended to urls without specified base url or don\'t start with http(s)://')
-	parser.add_argument('-user', "--username", action='store', dest='web_username', help='--user <username> (username for website, you will be prompted for password)')
+	parser.add_argument('-user', "--username", "--webuser", action='store', dest='web_username', help='--user <username> (username for website, you will be prompted for password)')
 	
 	# Option to check url status
 	parser.add_argument('--status', action='store_true', dest='status', help='--status \nto verify urls are available')
@@ -52,6 +54,10 @@ def get_arguments():
 						url = arguments.base_url + "/" + url
 					arguments.urls[index] = url
 	
+	if arguments.status:  # If Status is defined, don't scrape and verify content on pages
+		arguments.scrape = False
+		arguments.verify = False
+		
 	# Ensure Scrape and Verify Flags work together
 	if not arguments.scrape or arguments.verify:
 		arguments.scrape = True
