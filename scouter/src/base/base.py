@@ -123,9 +123,29 @@ class Base:
 		return queried_urls
 
 	def get_log_dir(self, application):
-		return os.environ['USERPROFILE'] + '\\Documents\\' + str(
-			application) + '\\Results\\' if platform.system() == 'Windows' else os.path.expanduser(
-			"~/Documents/" + application + "/Results/")
+		# determine if application is a script file or frozen exe
+		if getattr(sys, 'frozen', False):
+			current_dir = os.path.dirname(sys.executable)
+			log_dir = current_dir + "/Results/"
+		elif __file__:
+			current_dir = os.path.dirname(__file__)
+			parent_dir = os.path.abspath(
+				os.path.join(current_dir, os.pardir))  # Get Parent of Current Directory of Script
+			parent_parent_dir = os.path.abspath(
+				os.path.join(parent_dir, os.pardir))  # Get Parent of Current Directory of Script
+			log_dir = parent_parent_dir + "/Results/"
+		else:
+			current_dir = os.path.dirname(os.path.realpath(__file__))  # Get Current Directory of Running Script
+			parent_dir = os.path.abspath(os.path.join(current_dir, os.pardir))  # Get Parent of Current Directory of Script
+			parent_parent_dir = os.path.abspath(os.path.join(parent_dir, os.pardir))  # Get Parent of Current Directory of Script
+			log_dir = parent_parent_dir + "/Results/"
+		if platform.system() == 'Windows':
+			log_dir = log_dir.replace("/", "\\")
+		return log_dir
+		#  Deprecated old directory based on user home directories
+		# return os.environ['USERPROFILE'] + '\\Documents\\' + str(
+		# 	application) + '\\Results\\' if platform.system() == 'Windows' else os.path.expanduser(
+		# 	"~/Documents/" + application + "/Results/")
 
 	def get_resource(self, relative_path):
 		""" Get absolute path to resource, works for dev and for PyInstaller """

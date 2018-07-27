@@ -4,7 +4,7 @@ block_cipher = None
 
 
 a = Analysis(['scouter.py'],
-             pathex=['\\\\vboxsrv\\Scripts\\python\\QA\\site-tools\\git-site-tools\\scouter'],
+             pathex=['/home/wolf/Scripts/GitHub/site-tools/scouter'],
              binaries=[],
              datas=[],
              hiddenimports=[],

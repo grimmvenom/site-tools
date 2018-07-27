@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
-import argparse, re
-import getpass
+import argparse, sys, os
+import getpass, re
 import base64
 
-def get_arguments():
 
+def get_arguments():
 	parser = argparse.ArgumentParser()
 	parser.add_argument('-u', "-url", action='append', dest='url', help='-u <url> \thttp://<url> or https://<URL>')
 	parser.add_argument('-f', "-file", action='store', dest='file', help=' -f <filepath.txt> \n.txt file to import a list of urls from. One URL per line. Include http:// or https://')

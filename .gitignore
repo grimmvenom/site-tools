@@ -11,3 +11,7 @@ sitemap/config/Resources/testcrawl/testcrawl/spiders/__init__.py
 scouter/build/
 
 url-status/logs/
+
+\.idea/
+
+scouter/src/Results/
