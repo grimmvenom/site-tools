@@ -25,10 +25,11 @@ class Verify:
 				if not element_type.startswith(('ignored_', 'forms')):  # Ignore some keys
 					for index, value in self.log[url_key][element_type].items():  # Append data to list
 						target_url = value['target_url']
-						counter += 1
-						if target_url not in self.unique_requests:
-							self.unique_requests.append(target_url)
-						# request_list.append([url_key, element_type, index, value])
+						if value['valid_url'] == True:
+							counter += 1
+							if target_url not in self.unique_requests:
+								self.unique_requests.append(target_url)
+							# request_list.append([url_key, element_type, index, value])
 		print("Total Target Urls: " + str(counter))
 	
 	def _worker(self):

@@ -43,7 +43,7 @@ class Scouter:
 			url_status = Status(self.arguments)  # Set Variables in status.py
 			self.status_log = url_status.main()  # Request all unique urls and get a list of statuses
 			logger.write_log(self.status_log, 'statusCheck')  # Write Log to File
-		if self.arguments.scrape:
+		elif self.arguments.scrape:
 			from src.modules.scraper import Scrape
 			scraper = Scrape(self.arguments)  # Set Variables in scraper.py
 			self.scouter_log = scraper.main()  # Scrape content and return dictionary

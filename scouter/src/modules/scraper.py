@@ -15,7 +15,6 @@ class ScrapeRequirements(Enum):
 
 
 class Scrape:
-
 	def __init__(self, arguments):
 		self.arguments = arguments
 		self.urls = self.arguments.urls
@@ -99,7 +98,9 @@ class Scrape:
 								pass
 							else:
 								pass
-						
+							if element_log['target_url']:
+								valid_url = self.base.detect_valid_url(element_log['target_url'])
+								element_log['valid_url'] = valid_url
 						element_log[str(attribute)] = str(temp)
 					except:
 						pass

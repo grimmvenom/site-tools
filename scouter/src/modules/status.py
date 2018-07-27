@@ -20,10 +20,17 @@ class Status:
 	
 	def _worker(self):
 		unique_urls = list()
+		malformed_urls = list()
 		for url in self.urls:
-			if url not in unique_urls:
-				unique_urls.append(url)
-		print("# of Unique Urls: " + str(len(unique_urls)))
+			valid = self.base.detect_valid_url(url)
+			if valid == True:
+				if url not in unique_urls:
+					unique_urls.append(url)
+			else:
+				malformed_urls.append(url)
+		print("# of Unique Urls to request: " + str(len(unique_urls)))
+		print("# of Malformed URLs: " + str(len(malformed_urls)))
+		print(str(malformed_urls) + "\n")
 		with multiprocessing.Pool(processes=10) as pool:  # Start Multiprocessing pool
 			results = pool.map(self._verify, unique_urls)
 		self.status_results = results

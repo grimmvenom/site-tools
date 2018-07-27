@@ -5,10 +5,10 @@ import urllib.parse
 import multiprocessing
 from bs4 import BeautifulSoup
 from http.client import responses
-
+from django.core.validators import URLValidator
+from django.core.exceptions import ValidationError
 
 class Base:
-	
 	def __init__(self):
 		manager = multiprocessing.Manager()
 		self.scouter_log = manager.dict()
@@ -119,7 +119,6 @@ class Base:
 		else:
 			print("No Results Found. Please find a valid database or update your query")
 			exit()
-
 		return queried_urls
 
 	def get_log_dir(self, application):
@@ -200,3 +199,18 @@ class Base:
 		for uni, char in uni2ascii.items():
 			string = string.replace(uni, char)
 		return string
+
+	def detect_valid_url(self, string):
+		regex = re.compile(
+			r'^(?:http|ftp)s?://'  # http:// or https://
+			r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?)|'  # domain...
+			r'localhost|'  # localhost...
+			r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'  # ...or ip
+			r'(?::\d+)?'  # optional port
+			r'(?:/?|[/?]\S+)$', re.IGNORECASE)
+		
+		if re.match(regex, string) is not None:
+			result = True
+		else:
+			result = "Malformed"
+		return result
