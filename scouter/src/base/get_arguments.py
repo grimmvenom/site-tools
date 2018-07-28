@@ -1,4 +1,11 @@
 # -*- coding: utf-8 -*-
+"""
+Summary:
+		This Module will accept command line arguments to drive all activity in other modules
+author:
+grimm venom <grimmvenom@gmail.com>
+
+"""
 
 import argparse, sys, os
 import getpass, re

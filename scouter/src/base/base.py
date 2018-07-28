@@ -1,4 +1,11 @@
 # -*- coding: utf-8 -*-
+"""
+Summary:
+		This Module Contains base methods for functionality
+author:
+grimm venom <grimmvenom@gmail.com>
+
+"""
 
 import platform, os, sys, re, sqlite3, time, json, requests
 import urllib.parse

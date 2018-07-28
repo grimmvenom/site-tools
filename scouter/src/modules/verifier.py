@@ -1,5 +1,14 @@
 # -*- coding: utf-8 -*-
 
+"""
+Summary:
+		This Module will make multiprocessed requests to determine the scraped results availability
+		results are returned in json / dictionary format
+author:
+grimm venom <grimmvenom@gmail.com>
+
+"""
+
 import json, multiprocessing, math, sys
 from multiprocessing import Pipe
 from src.base.base import Base

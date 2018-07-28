@@ -13,7 +13,6 @@ grimm venom <grimmvenom@gmail.com>
 refactored:
 Dakota Carter <dakota22789@gmail.com>
 
-
 """
 
 from src.base.base import Base
@@ -59,11 +58,11 @@ class Scouter:
 				verifier = Verify(self.scrape_log, self.arguments)  # Define Verifier
 				self.verified_log = verifier.main()  # Run Verifier Method
 		
-			if self.arguments.tsv_output: #  Write Scraped / Verified Data to file
+			if self.arguments.tsv_output:  # Write Scraped / Verified Data to file
 				from src.modules.parse_results import Parse_TSV
 				parser = Parse_TSV(self.arguments)
 				if self.verified_log:
-					parser.scraper_to_tsv(self.verified_log, 'verifiedInfo') # Write Log to tsv File
+					parser.scraper_to_tsv(self.verified_log, 'verifiedInfo')  # Write Log to tsv File
 				else:
 					parser.scraper_to_tsv(self.scrape_log, 'scrapedInfo')  # Write Scraped Dictionary to tsv File
 			else:
@@ -72,9 +71,6 @@ class Scouter:
 				else:
 					logger.write_log(self.scrape_log, 'scrapedInfo')  # Write Scraped Dictionary to json File
 
-			
-		
-				
 		end_time = '{:.2f}'.format((time.time() - start_time))
 		print("\nTotal Runtime: " + str(end_time) + " (seconds)\n")
 		

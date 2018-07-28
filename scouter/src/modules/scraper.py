@@ -1,4 +1,12 @@
 # -*- coding: utf-8 -*-
+"""
+Summary:
+		This Module Scrapes images, links, forms and the specified attributes for each element type
+		results are returned in json / dictionary format
+author:
+grimm venom <grimmvenom@gmail.com>
+
+"""
 
 from bs4 import BeautifulSoup
 from src.base.base import Base

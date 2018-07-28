@@ -1,5 +1,11 @@
 # -*- coding: utf-8 -*-
+"""
+Summary:
+		This Module will take json logs and convert them into tsv format
+author:
+grimm venom <grimmvenom@gmail.com>
 
+"""
 
 import platform, os, sys, re, time, json, csv
 from src.base.base import Base
@@ -18,42 +24,6 @@ class Parse_TSV:
 	def main(self):
 		if not os.path.isdir(self.log_dir):
 			os.makedirs(self.log_dir)
-		
-	def retrieve_headers(self, test_dict: dict, name_var=''):
-		for element in test_dict:
-			if isinstance(test_dict[element], dict):
-				self.retrieve_headers(test_dict[element], name_var + '||' + element)
-			else:
-				header_dict[name_var + '||' + element] = test_dict[element]
-		# output_file = open(report_path, 'w')
-		# csv_writer = csv.writer(output_file, delimiter='\t', quotechar='"')
-		# # csv_writer = uniccsv.writer(output_file, delimiter=',', quotechar='"')
-		
-		# records = []
-		# header_list = []
-		#
-		# for record in json_results.items():
-		# 	records.append(record)
-		# print("Records count: " + str(len(records)))
-		#
-		# for key, item in json_results.items():
-		# 	self.retrieve_headers(item)
-		# 	for item_label in header_dict:
-		# 		if item_label not in header_list:
-		# 			header_list.append(item_label)
-		# csv_writer.writerow(header_list)
-		
-		# cursor_records = collection.find()
-		# for cursor in cursor_records:
-		# 	row_to_push = []
-		# 	header_dict = {}
-		# 	self.retrieve_headers(cursor)
-		# 	for item_label in header_list:
-		# 		if item_label in header_dict:
-		# 			row_to_push.append(header_dict[item_label])
-		# 		else:
-		# 			row_to_push.append('')
-		# 	csv_writer.writerow(row_to_push)
 	
 	def scraper_to_tsv(self, json_results: dict, filename=''):
 		global header_dict
