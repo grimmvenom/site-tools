@@ -19,6 +19,8 @@ def get_arguments():
 	parser.add_argument('-verify', action='store_true', dest='verify', help='-verify \nto verify scraped images and links')
 	parser.add_argument('--limit', action='append', dest='limit', help='--limit <domain> \nto only check content with specified domain')
 	parser.add_argument('--exclude', action='append', dest='exclude', help='--exclude <domain> \nSpecific domains to ignore content for')
+	
+	parser.add_argument('--tsv', '--excel', action='store_true', dest='tsv_output', help='Write Output in tsv format instead of json')
 	arguments = parser.parse_args()
 	arguments.urls = list()
 	
@@ -59,6 +61,8 @@ def get_arguments():
 	if arguments.status:  # If Status is defined, don't scrape and verify content on pages
 		arguments.scrape = False
 		arguments.verify = False
+	else:
+		arguments.scrape = True
 		
 	# Ensure Scrape and Verify Flags work together
 	if not arguments.scrape or arguments.verify:

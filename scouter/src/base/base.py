@@ -12,21 +12,19 @@ class Base:
 	def __init__(self):
 		manager = multiprocessing.Manager()
 		self.scouter_log = manager.dict()
-		self.name = "Scouter"
 		self.date = time.strftime("%Y-%m-%d")  # Date Format ISO 8601
 		self.start = time.strftime("%I_%M")  # Time
 		self.exec_time = str(time.strftime("%I_%M_%p"))  # Time
-		self.log_dir = self.get_log_dir(self.name)
+		self.log_dir = self.get_log_dir()
 		self.timeout = 10
 
 	def write_log(self, log: dict, filename=""):
-		log_dir = self.get_log_dir(self.name)
-		if not os.path.isdir(log_dir):
-			os.makedirs(log_dir)
+		if not os.path.isdir(self.log_dir):
+			os.makedirs(self.log_dir)
 		if filename:
-			file = log_dir + filename + "-" + self.date+"-"+self.exec_time+".json"
+			file = self.log_dir + filename + "-" + self.date+"-"+self.exec_time+".json"
 		else:
-			file = log_dir + self.date + "-" + self.exec_time + ".json"
+			file = self.log_dir + self.date + "-" + self.exec_time + ".json"
 		print("Logging to: " + file)
 		with open(file, 'w') as jsonfile:
 			jsonfile.write(json.dumps(log, sort_keys=False, indent=4, separators=(',', ':')))
@@ -121,7 +119,7 @@ class Base:
 			exit()
 		return queried_urls
 
-	def get_log_dir(self, application):
+	def get_log_dir(self):
 		# determine if application is a script file or frozen exe
 		if getattr(sys, 'frozen', False):
 			current_dir = os.path.dirname(sys.executable)

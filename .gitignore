@@ -15,3 +15,5 @@ url-status/logs/
 \.idea/
 
 scouter/src/Results/
+
+scouter/Results/

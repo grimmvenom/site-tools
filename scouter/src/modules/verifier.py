@@ -6,7 +6,6 @@ from src.base.base import Base
 
 
 class Verify:
-
 	def __init__(self, log, arguments):
 		self.arguments = arguments
 		self.log = log.copy()
