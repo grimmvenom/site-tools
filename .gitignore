@@ -17,3 +17,11 @@ url-status/logs/
 scouter/src/Results/
 
 scouter/Results/
+
+canary/Results/
+
+canary/src/__init__\.py
+
+canary/src/base/__init__\.py
+
+canary/src/modules/__init__\.py
