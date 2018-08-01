@@ -23,3 +23,5 @@ canary/src/__init__\.py
 canary/src/base/__init__\.py
 
 canary/src/modules/__init__\.py
+
+canary/build/
