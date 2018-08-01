@@ -12,8 +12,6 @@ import urllib.parse
 import multiprocessing
 from bs4 import BeautifulSoup
 from http.client import responses
-from django.core.validators import URLValidator
-from django.core.exceptions import ValidationError
 
 
 class Base:
@@ -30,7 +28,7 @@ class Base:
 		if not os.path.isdir(self.log_dir):
 			os.makedirs(self.log_dir)
 		if filename:
-			file = self.log_dir + filename + "-" + self.date+"-"+self.exec_time+".json"
+			file = self.log_dir + filename + "-" + self.date + "-" + self.exec_time + ".json"
 		else:
 			file = self.log_dir + self.date + "-" + self.exec_time + ".json"
 		print("Logging to: " + file)

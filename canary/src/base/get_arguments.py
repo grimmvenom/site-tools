@@ -70,10 +70,12 @@ def get_arguments():
 		arguments.verify = False
 		
 	# Ensure Scrape and Verify Flags work together
-	if arguments.verify:
+	if arguments.verify:  # If verify, auto scrape
 		arguments.scrape = True
-	if not arguments.status and not arguments.verify:
+	if not arguments.status and not arguments.scrape and not arguments.verify:  # if status and verify not selected,
 		arguments.scrape = True
+	if arguments.scrape:  # If scrape is set, don't do status report
+		arguments.status = False
 	
 	if arguments.web_username:
 		arguments.web_password = getpass.getpass('Please enter your authentication\'s Password: ')
