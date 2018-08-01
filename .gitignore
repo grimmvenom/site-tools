@@ -2,9 +2,7 @@
 *.pyc
 sitemap/.DS_Store
 url-status/.DS_Store
-url-status/files/BSR-Ford-Origin_A.txt
-url-status/files/BSR-Ford-US.txt
-url-status/files/test.txt
+url-status/files
 .DS_Store
 sitemap/config/Resources/testcrawl/testcrawl/__init__.py
 sitemap/config/Resources/testcrawl/testcrawl/spiders/__init__.py
