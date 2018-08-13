@@ -53,27 +53,27 @@ class Parse_TSV:
 		for element_type in headers.keys():
 			if 'scraped_from' in headers[element_type]:
 				headers[element_type].insert(0, headers[element_type].pop(headers[element_type].index('scraped_from')))
+			if 'text' in headers[element_type]:
+				headers[element_type].insert(1, headers[element_type].pop(headers[element_type].index('text')))
 			if 'target_url' in headers[element_type]:
-				headers[element_type].insert(1, headers[element_type].pop(headers[element_type].index('target_url')))
+				headers[element_type].insert(2, headers[element_type].pop(headers[element_type].index('target_url')))
 			
 			if 'href' in headers[element_type]:
-				headers[element_type].insert(2, headers[element_type].pop(headers[element_type].index('href')))
+				headers[element_type].insert(3, headers[element_type].pop(headers[element_type].index('href')))
 			elif 'src' in headers[element_type]:
-				headers[element_type].insert(2, headers[element_type].pop(headers[element_type].index('src')))
+				headers[element_type].insert(3, headers[element_type].pop(headers[element_type].index('src')))
 			
 			if 'htmlTag' in headers[element_type]:
-				headers[element_type].insert(3, headers[element_type].pop(headers[element_type].index('htmlTag')))
+				headers[element_type].insert(4, headers[element_type].pop(headers[element_type].index('htmlTag')))
 			
 			if 'status' in headers[element_type]:
-				headers[element_type].insert(4, headers[element_type].pop(headers[element_type].index('status')))
+				headers[element_type].insert(5, headers[element_type].pop(headers[element_type].index('status')))
 				if 'message' in headers[element_type]:
-					headers[element_type].insert(5, headers[element_type].pop(headers[element_type].index('message')))
+					headers[element_type].insert(6, headers[element_type].pop(headers[element_type].index('message')))
 				if 'pageTitle' in headers[element_type]:
-					headers[element_type].insert(6, headers[element_type].pop(headers[element_type].index('pageTitle')))
-				elif 'valid_url' in headers[element_type]:
-					headers[element_type].insert(7, headers[element_type].pop(headers[element_type].index('valid_url')))
-			elif 'valid_url' in headers[element_type]:
-				headers[element_type].insert(5, headers[element_type].pop(headers[element_type].index('valid_url')))
+					headers[element_type].insert(7, headers[element_type].pop(headers[element_type].index('pageTitle')))
+			if 'valid_url' in headers[element_type]:
+				headers[element_type].insert(-1, headers[element_type].pop(headers[element_type].index('valid_url')))
 				
 		# Combine dictionary results by element_type
 		for url, url_data in json_results.items():
