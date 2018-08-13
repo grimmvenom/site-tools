@@ -169,7 +169,7 @@ class Base:
 		else:
 			print("Directory already exists.")
 
-	def unicodetoascii(self, string):
+	def unicode_to_ascii(self, string):
 		# print("Replacing Characters")
 		uni2ascii = {
 			'\\xc2\\xae': '®',

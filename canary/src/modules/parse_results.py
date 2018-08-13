@@ -39,62 +39,62 @@ class Parse_TSV:
 		
 		# Get Unique Headers
 		for url, url_data in json_results.items():
-			for type, type_data in url_data.items():
-				if type not in headers:
-					headers[type] = list()
+			for element_type, type_data in url_data.items():
+				if element_type not in headers:
+					headers[element_type] = list()
 				for index, data in type_data.items():
-					json_results[url][type][index]['scraped_from'] = url
+					json_results[url][element_type][index]['scraped_from'] = url
 					for key, value in data.items():
-						if key not in headers[type]:
-							headers[type].append(key)
+						if key not in headers[element_type]:
+							headers[element_type].append(key)
 		# print(headers)
 		
 		# sort headers
-		for type in headers.keys():
-			if 'scraped_from' in headers[type]:
-				headers[type].insert(0, headers[type].pop(headers[type].index('scraped_from')))
-			if 'target_url' in headers[type]:
-				headers[type].insert(1, headers[type].pop(headers[type].index('target_url')))
+		for element_type in headers.keys():
+			if 'scraped_from' in headers[element_type]:
+				headers[element_type].insert(0, headers[element_type].pop(headers[element_type].index('scraped_from')))
+			if 'target_url' in headers[element_type]:
+				headers[element_type].insert(1, headers[element_type].pop(headers[element_type].index('target_url')))
 			
-			if 'href' in headers[type]:
-				headers[type].insert(2, headers[type].pop(headers[type].index('href')))
-			elif 'src' in headers[type]:
-				headers[type].insert(2, headers[type].pop(headers[type].index('src')))
+			if 'href' in headers[element_type]:
+				headers[element_type].insert(2, headers[element_type].pop(headers[element_type].index('href')))
+			elif 'src' in headers[element_type]:
+				headers[element_type].insert(2, headers[element_type].pop(headers[element_type].index('src')))
 			
-			if 'htmlTag' in headers[type]:
-				headers[type].insert(3, headers[type].pop(headers[type].index('htmlTag')))
+			if 'htmlTag' in headers[element_type]:
+				headers[element_type].insert(3, headers[element_type].pop(headers[element_type].index('htmlTag')))
 			
-			if 'status' in headers[type]:
-				headers[type].insert(4, headers[type].pop(headers[type].index('status')))
-				if 'message' in headers[type]:
-					headers[type].insert(5, headers[type].pop(headers[type].index('message')))
-				if 'pageTitle' in headers[type]:
-					headers[type].insert(6, headers[type].pop(headers[type].index('pageTitle')))
-				elif 'valid_url' in headers[type]:
-					headers[type].insert(7, headers[type].pop(headers[type].index('valid_url')))
-			elif 'valid_url' in headers[type]:
-				headers[type].insert(5, headers[type].pop(headers[type].index('valid_url')))
+			if 'status' in headers[element_type]:
+				headers[element_type].insert(4, headers[element_type].pop(headers[element_type].index('status')))
+				if 'message' in headers[element_type]:
+					headers[element_type].insert(5, headers[element_type].pop(headers[element_type].index('message')))
+				if 'pageTitle' in headers[element_type]:
+					headers[element_type].insert(6, headers[element_type].pop(headers[element_type].index('pageTitle')))
+				elif 'valid_url' in headers[element_type]:
+					headers[element_type].insert(7, headers[element_type].pop(headers[element_type].index('valid_url')))
+			elif 'valid_url' in headers[element_type]:
+				headers[element_type].insert(5, headers[element_type].pop(headers[element_type].index('valid_url')))
 				
-		# Combine dictionary results by type
+		# Combine dictionary results by element_type
 		for url, url_data in json_results.items():
-			for type, type_data in url_data.items():
-				if type not in total_records.keys():
-					total_records[type] = list()
+			for element_type, type_data in url_data.items():
+				if element_type not in total_records.keys():
+					total_records[element_type] = list()
 				for index, data in type_data.items():
-					total_records[type].append(data)
+					total_records[element_type].append(data)
 		
 		# print(total_records)
 		
 		output_file = open(report_path, 'w')
 		csv_writer = csv.writer(output_file, delimiter='\t', quotechar='"')
-		for type, type_data in total_records.items():
-			output_file.write("\n" + str(type) + "\n")
-			csv_writer.writerow(headers[type])
+		for element_type, type_data in total_records.items():
+			output_file.write("\n" + str(element_type) + "\n")
+			csv_writer.writerow(headers[element_type])
 			output_file.write("\n")
 			for item in type_data:
-				order = ["\t"] * len(headers[type])
+				order = ["\t"] * len(headers[element_type])
 				for key, value in item.items():
-					index = headers[type].index(key)
+					index = headers[element_type].index(key)
 					order[index] = value
 				csv_writer.writerow(order)
 			output_file.write("\n\n")

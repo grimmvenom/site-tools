@@ -120,17 +120,23 @@ class Scrape:
 						'data': element_log}
 				if elements[x]['value'].content:
 					content = str(element.content).replace("\\t", "").replace("\\r", "").replace("\\n", ",").strip()  # Remove encoded characters
-					new_content = re.sub("\s{3,}", ",", content)  # Replace 3+ spaces with a comma
+					new_content = str(re.sub("\s{3,}", ",", content))  # Replace 3+ spaces with a comma
 					try:
+						string = self.base.unicode_to_ascii(new_content)
+						result['data']['content'] = string
+					except Exception as e:
 						result['data']['content'] = new_content
-					except:
+						# print("Content Exception: " + str(e))
 						pass
 				if elements[x]['value'].text:
 					text = str(element.text).replace("\\t", "").replace("\\r", "").replace("\\n", "").strip()  # Remove encoded characters
-					new_text = re.sub("\s{3,}", ",", text)
+					new_text = str(re.sub("\s{3,}", ",", text))
 					try:
-						result['data']['text'] = Base.unicodetoascii(new_text)
-					except:
+						string = self.base.unicode_to_ascii(new_text)
+						result['data']['text'] = string
+					except Exception as e:
+						result['data']['text'] = str(new_text)
+						# print("Text Exception: " + str(e))
 						pass
 				
 				# Domain URL Filters

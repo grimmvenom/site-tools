@@ -46,7 +46,8 @@ class Canary:
 			if self.arguments.tsv_output:
 				from src.modules.parse_results import Parse_TSV
 				parser = Parse_TSV(self.arguments)
-				parser.scraper_to_tsv(self.status_log, 'statusCheck')
+				parser.scraper_to_tsv(self.status_log, 'statusCheck')  # Write TSV Output
+				logger.write_log(self.status_log, 'statusCheck')  # Write Log to json File
 			else:
 				logger.write_log(self.status_log, 'statusCheck')  # Write Log to json File
 			
@@ -54,24 +55,23 @@ class Canary:
 			from src.modules.scraper import Scrape
 			scraper = Scrape(self.arguments)  # Set Variables in scraper.py
 			self.scrape_log = scraper.main()  # Scrape content and return dictionary
+			
 			if self.arguments.verify:
 				from src.modules.verifier import Verify
 				verifier = Verify(self.scrape_log, self.arguments)  # Define Verifier
 				self.verified_log = verifier.main()  # Run Verifier Method
+				logger.write_log(self.verified_log, 'verifiedInfo')  # Write Log to json File
+			else:
+				logger.write_log(self.scrape_log, 'scrapedInfo')  # Write Scraped Dictionary to json File
 		
 			if self.arguments.tsv_output:  # Write Scraped / Verified Data to file
 				from src.modules.parse_results import Parse_TSV
 				parser = Parse_TSV(self.arguments)
 				if self.verified_log:
 					parser.scraper_to_tsv(self.verified_log, 'verifiedInfo')  # Write Log to tsv File
+					
 				else:
 					parser.scraper_to_tsv(self.scrape_log, 'scrapedInfo')  # Write Scraped Dictionary to tsv File
-			else:
-				if self.verified_log:
-					logger.write_log(self.verified_log, 'verifiedInfo')  # Write Log to json File
-				else:
-					logger.write_log(self.scrape_log, 'scrapedInfo')  # Write Scraped Dictionary to json File
-
 		end_time = '{:.2f}'.format((time.time() - start_time))
 		print("\nTotal Runtime: " + str(end_time) + " (seconds)\n")
 		
