@@ -35,6 +35,7 @@ class Base:
 		with open(file, 'w') as jsonfile:
 			jsonfile.write(json.dumps(log, sort_keys=False, indent=4, separators=(',', ':')))
 		jsonfile.close()
+		return str(file)
 
 	def get_extension(self, file: str):
 		return re.findall('(?i)(\.\w{2,4})', file)[-1]
@@ -83,10 +84,14 @@ class Base:
 				html = BeautifulSoup(page_source, 'html.parser')
 				page_title = html.title.text
 				page_title = urllib.parse.unquote(page_title)  # Decode text in url format
-				page_title = self.unicodetoascii(page_title)  # Decode unicode to ascii
+				try:
+					page_title = self.unicode_to_ascii(page_title)  # Decode unicode to ascii
+				except:
+					pass
 				request_response["pageTitle"] = str(page_title)
-			except:
-				request_response["pageTitle"] = ""
+			except Exception as e:
+				# print("Page Title Error: " + str(e))
+				request_response["pageTitle"] = "N/A"
 		
 		except requests.exceptions.Timeout as e:
 			request_response['status'] = 408

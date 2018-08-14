@@ -27,7 +27,7 @@ def get_arguments():
 	parser.add_argument('--limit', action='append', dest='limit', help='--limit <domain> \nto only check content with specified domain')
 	parser.add_argument('--exclude', action='append', dest='exclude', help='--exclude <domain> \nSpecific domains to ignore content for')
 	
-	parser.add_argument('--tsv', '--excel', action='store_true', dest='tsv_output', help='Write Output in tsv format instead of json')
+	parser.add_argument('--excel', action='store_true', dest='excel_output', help='Write Output in Excel format instead of json')
 	arguments = parser.parse_args()
 	arguments.urls = list()
 	

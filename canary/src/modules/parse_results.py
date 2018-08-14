@@ -9,9 +9,10 @@ grimm venom <grimmvenom@gmail.com>
 
 import platform, os, sys, re, time, json, csv
 from src.base.base import Base
+import xlsxwriter
 
 
-class Parse_TSV:
+class Parse_Excel:
 	def __init__(self, arguments):
 		self.arguments = arguments
 		self.date = time.strftime("%Y-%m-%d")  # Date Format ISO 8601
@@ -25,14 +26,14 @@ class Parse_TSV:
 		if not os.path.isdir(self.log_dir):
 			os.makedirs(self.log_dir)
 	
-	def scraper_to_tsv(self, json_results: dict, filename=''):
+	def scraper_to_excel(self, json_results: dict, filename=''):
 		headers = dict()
 		total_records = dict()
 		
 		if filename:
-			report_path = self.log_dir + filename + "-" + self.date + "-" + self.exec_time + ".tsv"
+			report_path = self.log_dir + filename + "-" + self.date + "-" + self.exec_time + ".xlsx"
 		else:
-			report_path = self.log_dir + self.date + "-" + self.exec_time + ".tsv"
+			report_path = self.log_dir + self.date + "-" + self.exec_time + ".xlsx"
 		
 		print(json_results.keys())
 		print("\nWriting results to: " + str(report_path))
@@ -84,19 +85,38 @@ class Parse_TSV:
 					total_records[element_type].append(data)
 		
 		# print(total_records)
+		# output_file = open(report_path, 'w')
+		# csv_writer = csv.writer(output_file, delimiter='\t', quotechar='"')
+		# for element_type, type_data in total_records.items():
+		# 	output_file.write("\n" + str(element_type) + "\n")
+		# 	csv_writer.writerow(headers[element_type])
+		# 	output_file.write("\n")
+		# 	for item in type_data:
+		# 		order = ["\t"] * len(headers[element_type])
+		# 		for key, value in item.items():
+		# 			index = headers[element_type].index(key)
+		# 			order[index] = value
+		# 		csv_writer.writerow(order)
+		# 	output_file.write("\n\n")
 		
-		output_file = open(report_path, 'w')
-		csv_writer = csv.writer(output_file, delimiter='\t', quotechar='"')
+		# output_file = open(report_path, 'w')
+		# csv_writer = csv.writer(output_file, delimiter='\t', quotechar='"')
+		
+		workbook = xlsxwriter.Workbook(report_path)
+		
 		for element_type, type_data in total_records.items():
-			output_file.write("\n" + str(element_type) + "\n")
-			csv_writer.writerow(headers[element_type])
-			output_file.write("\n")
+			row = 0
+			column = 0
+			worksheet = workbook.add_worksheet(str(element_type))
+			for head in headers[element_type]:
+				worksheet.write(row, column, head)
+				column += 1
+			row += 1
 			for item in type_data:
-				order = ["\t"] * len(headers[element_type])
 				for key, value in item.items():
 					index = headers[element_type].index(key)
-					order[index] = value
-				csv_writer.writerow(order)
-			output_file.write("\n\n")
-		
+					column = index
+					worksheet.write(row, column, str(value))
+				row += 1
+		return report_path
 

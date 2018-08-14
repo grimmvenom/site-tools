@@ -12,9 +12,7 @@ To the target, this may look like an attack / Denial of Service (DoS).
 ### List all available options (help)
 python canary.py -h
 
-### Output in tsv / excel format
-python canary.py --tsv <br />
-or <br />
+### Output in excel format
 python canary.py --excel <br />
 
 ### Define Urls to test: <br />
