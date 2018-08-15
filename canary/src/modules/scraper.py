@@ -112,7 +112,7 @@ class Scrape:
 						element_log[str(attribute)] = str(temp)
 					except:
 						pass
-					
+				element_log['scraped_from'] = str(url)
 				result = {'url': str(url),
 						'elementType': str(element_type),
 						'index': str(x),

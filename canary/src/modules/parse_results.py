@@ -44,7 +44,7 @@ class Parse_Excel:
 				if element_type not in headers:
 					headers[element_type] = list()
 				for index, data in type_data.items():
-					json_results[url][element_type][index]['scraped_from'] = url
+					# json_results[url][element_type][index]['scraped_from'] = url
 					for key, value in data.items():
 						if key not in headers[element_type]:
 							headers[element_type].append(key)
