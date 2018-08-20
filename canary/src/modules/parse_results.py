@@ -102,14 +102,17 @@ class Parse_Excel:
 		# output_file = open(report_path, 'w')
 		# csv_writer = csv.writer(output_file, delimiter='\t', quotechar='"')
 		
-		workbook = xlsxwriter.Workbook(report_path)
+		workbook = xlsxwriter.Workbook(report_path, {'strings_to_urls': False})
+		header_cells = workbook.add_format()
+		header_cells.set_bold()
+		header_cells.set_align('center')
 		
 		for element_type, type_data in total_records.items():
 			row = 0
 			column = 0
 			worksheet = workbook.add_worksheet(str(element_type))
 			for head in headers[element_type]:
-				worksheet.write(row, column, head)
+				worksheet.write(row, column, head, header_cells)
 				column += 1
 			row += 1
 			for item in type_data:
