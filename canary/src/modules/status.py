@@ -47,6 +47,7 @@ class Status:
 	def _verify(self, url):
 		response_data = dict()
 		# print([element_url, element_type, element_index])
+		response_data["url"] = str(url)
 		try:
 			if self.arguments.web_username and self.arguments.web_password:
 				response = self.base.get_response(url, False, str(self.arguments.web_username), str(self.arguments.web_password))

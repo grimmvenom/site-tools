@@ -10,6 +10,8 @@ grimm venom <grimmvenom@gmail.com>
 import platform, os, sys, re, time, json, csv
 from src.base.base import Base
 import xlsxwriter
+import pandas
+from pandas.io.json import json_normalize
 
 
 class Parse_Excel:
@@ -26,6 +28,14 @@ class Parse_Excel:
 		if not os.path.isdir(self.log_dir):
 			os.makedirs(self.log_dir)
 	
+	def create_workbook(self, filename):
+		report_path = self.log_dir + filename + "-" + self.date + "-" + self.exec_time + ".xlsx"
+		workbook = xlsxwriter.Workbook(report_path, {'strings_to_urls': False})
+		header_cells = workbook.add_format()
+		header_cells.set_bold()
+		header_cells.set_align('center')
+		return workbook, report_path
+
 	def scraper_to_excel(self, json_results: dict, filename=''):
 		headers = dict()
 		total_records = dict()
@@ -122,4 +132,37 @@ class Parse_Excel:
 					worksheet.write(row, column, str(value))
 				row += 1
 		return report_path
-
+	
+	def status_to_excel(self, json_results: dict, filename=''):
+		print("Writing json to excel")
+		# Append List of dictionary results to a single dictionary
+		json_dictionary = {}
+		for d in json_results:
+			for url, data in d.items():
+				json_dictionary[url] = data
+		
+		# data_frame = pandas.DataFrame(json_normalize(json_dictionary))
+		# print(data_frame)
+		# print(data_frame.columns.values)
+		loop_data = list()
+		for url, data in json_dictionary.items():
+			# print(url)
+			# print(data)
+			loop_data.append(data)
+			# data_frame = pandas.DataFrame(json_normalize(json_results))
+		df = pandas.DataFrame(loop_data)
+		columns = list(df.columns.values)
+		if 'url' in columns:
+			columns.insert(0, columns.pop(columns.index('url')))
+		if 'status' in columns:
+			columns.insert(1, columns.pop(columns.index('status')))
+		if 'pageTitle' in columns:
+			columns.insert(2, columns.pop(columns.index('pageTitle')))
+		# print(columns)
+		# print(df)
+		
+		workbook, report_path = self.create_workbook('UrlStatus')  # Create workbook
+		workbook.add_worksheet('Status')  # Add Named Sheet to Workbook
+		writer = pandas.ExcelWriter(report_path, engine='xlsxwriter', options={'strings_to_urls': False})  # Write DataFrame to excel
+		df[columns].to_excel(writer, sheet_name='Status')  # Write sorted Dataframe
+		return report_path

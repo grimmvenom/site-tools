@@ -7,11 +7,12 @@ grimm venom <grimmvenom@gmail.com>
 
 """
 
-import platform, os, sys, re, sqlite3, time, json, requests
+import platform, os, sys, re, sqlite3, time, json, requests, urllib3
 import urllib.parse
 import multiprocessing
 from bs4 import BeautifulSoup
 from http.client import responses
+from urllib3.exceptions import InsecureRequestWarning
 
 
 class Base:
@@ -61,14 +62,15 @@ class Base:
 				self.canary_log[key] = value
 
 	def get_response(self, url, source=False, username="", password=""):
+		urllib3.disable_warnings(category=InsecureRequestWarning)
 		# print("Requesting: " + str(url))
 		request_response = {}
 		try:
 			if username and password:
 				# Perform Get Request of url with authentication to gather info
-				response = requests.get(url, auth=(username, password), stream=True, allow_redirects=True, timeout=self.timeout)
+				response = requests.get(url, auth=(username, password), verify=False, stream=True, allow_redirects=True, timeout=self.timeout)
 			else:
-				response = requests.get(url, stream=True, allow_redirects=True, timeout=self.timeout)
+				response = requests.get(url, verify=False, stream=True, allow_redirects=True, timeout=self.timeout)
 			
 			if response.history:
 				request_response["status"] = str(response.history[0].status_code)

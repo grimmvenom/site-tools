@@ -46,8 +46,9 @@ class Canary:
 			if self.arguments.excel_output:
 				from src.modules.parse_results import Parse_Excel
 				parser = Parse_Excel(self.arguments)
-				parser.scraper_to_excel(self.status_log, 'statusCheck')  # Write Excel Output
-				out_file = logger.write_log(self.status_log, 'statusCheck')  # Write Log to json File
+				logger.write_log(self.status_log, 'statusCheck')  # Write Log to json File
+				out_file = parser.status_to_excel(self.status_log, 'statusCheck')
+				# parser.scraper_to_excel(self.status_log, 'statusCheck')  # Write Excel Output
 			else:
 				out_file = logger.write_log(self.status_log, 'statusCheck')  # Write Log to json File
 			self.open_out_file(out_file)
