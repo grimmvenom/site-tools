@@ -14,4 +14,4 @@ Fixes issue #2978 with pandas version 0.21
 """
 
 
-hiddenimports = ['pandas._libs.tslibs.timedeltas']
+hiddenimports = ['pandas._libs.tslibs.np_datetime','pandas._libs.tslibs.nattype','pandas._libs.skiplist']
