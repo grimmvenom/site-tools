@@ -12,7 +12,7 @@ from bs4 import BeautifulSoup
 from src.base.base import Base
 from enum import Enum
 import re, urllib3, multiprocessing, requests
-
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 class ScrapeRequirements(Enum):
 	IMAGES = ["img"], ["src", "name", "class", "id", "value", 'title', 'alt', 'role', 'data-srcset']
@@ -32,7 +32,6 @@ class Scrape:
 		if self.arguments.web_username and self.arguments.web_password:
 			print("Setting Auth with username: " + str(self.arguments.web_username))
 			self.session.auth = (self.arguments.web_username, self.arguments.web_password)
-		urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 		manager = multiprocessing.Manager()
 
 	def main(self):

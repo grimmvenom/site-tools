@@ -4,7 +4,7 @@ block_cipher = None
 
 
 a = Analysis(['canary.py'],
-             pathex=['/home/wolf/Scripts/GitHub/site-tools/canary'],
+             pathex=['D:\\GitHub\\site-tools\\canary'],
              binaries=[],
              datas=[],
              hiddenimports=[],
