@@ -13,7 +13,6 @@ import json, multiprocessing, math, sys
 from multiprocessing import Pipe
 from src.base.base import Base
 import re, urllib3, requests
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
 class Verify:
@@ -26,6 +25,7 @@ class Verify:
 		if self.arguments.web_username and self.arguments.web_password:
 			print("Setting Auth with username: " + str(self.arguments.web_username))
 			self.session.auth = (self.arguments.web_username, self.arguments.web_password)
+		urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 	def main(self):
 		self._unique_requests()

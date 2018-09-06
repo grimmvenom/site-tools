@@ -25,6 +25,7 @@ class Base:
 		self.exec_time = str(time.strftime("%I_%M_%p"))  # Time
 		self.log_dir = self.get_log_dir()
 		self.timeout = 10
+		urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 	def write_log(self, log: dict, filename=""):
 		if not os.path.isdir(self.log_dir):
@@ -107,15 +108,19 @@ class Base:
 			return request_response
 
 	def session_get_response(self, session, url, source=False):
+		urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 		response_data = dict()
 		# print([element_url, element_type, element_index])
 		response_data["url"] = str(url)
 		try:
-			response = session.get(url, stream=True, verify=False)
-			response_data['status'] = response.status_code
+			response = session.get(url, stream=True, verify=False, allow_redirects=True)
 			if response.history:
+				response_data["status"] = str(response.history[0].status_code)
 				response_data["redirectedURL"] = response.url
-			response_data["message"] = str(responses[int(response.status_code)])
+				response_data["message"] = str(responses[int(response.history[0].status_code)])
+			else:
+				response_data['status'] = response.status_code
+				response_data["message"] = str(responses[int(response.status_code)])
 			tree = fromstring(response.content)
 			response_data["pageTitle"] = tree.findtext('.//title')
 			page_source = str(response.content)

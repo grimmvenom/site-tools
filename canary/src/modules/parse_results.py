@@ -45,7 +45,7 @@ class Parse_Excel:
 		else:
 			report_path = self.log_dir + self.date + "-" + self.exec_time + ".xlsx"
 		
-		print(json_results.keys())
+		# print(json_results.keys())
 		print("\nWriting results to: " + str(report_path))
 		
 		# Get Unique Headers

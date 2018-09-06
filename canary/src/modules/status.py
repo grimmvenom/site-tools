@@ -13,7 +13,7 @@ import multiprocessing, requests, json
 import urllib3
 from http.client import responses
 from lxml.html import fromstring
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
 
 class Status:
 	def __init__(self, arguments):
@@ -26,6 +26,7 @@ class Status:
 			print("Setting Auth with username: " + str(self.arguments.web_username))
 			self.session.auth = (self.arguments.web_username, self.arguments.web_password)
 		multiprocessing.freeze_support()
+		urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 		
 	def main(self):
 		print("Checking URL Statuses")
