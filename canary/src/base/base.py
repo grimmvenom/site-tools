@@ -13,6 +13,7 @@ import multiprocessing
 from bs4 import BeautifulSoup
 from http.client import responses
 from urllib3.exceptions import InsecureRequestWarning
+from lxml.html import fromstring
 
 
 class Base:
@@ -105,6 +106,32 @@ class Base:
 		else:
 			return request_response
 
+	def session_get_response(self, session, url, source=False):
+		response_data = dict()
+		# print([element_url, element_type, element_index])
+		response_data["url"] = str(url)
+		try:
+			response = session.get(url, stream=True, verify=False)
+			response_data['status'] = response.status_code
+			if response.history:
+				response_data["redirectedURL"] = response.url
+			response_data["message"] = str(responses[int(response.status_code)])
+			tree = fromstring(response.content)
+			response_data["pageTitle"] = tree.findtext('.//title')
+			page_source = str(response.content)
+		except Exception as e:
+			response_data['status'] = "ERROR"
+			response_data['message'] = "Request Error"
+			response_data['pageTitle'] = "N/A"
+			page_source = "ERROR"
+			print("Error: \n" + str(e))
+			print("\nFailure @: " + str(url))
+			print("\n")
+		if source:
+			return response_data, page_source, session
+		else:
+			return response_data, session
+			
 	def get_protocol(self, url):
 		return re.findall('(?i)(https?:)', url)[0]
 

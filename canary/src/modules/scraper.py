@@ -10,10 +10,8 @@ grimm venom <grimmvenom@gmail.com>
 
 from bs4 import BeautifulSoup
 from src.base.base import Base
-import math, json
-import multiprocessing
 from enum import Enum
-import re
+import re, urllib3, multiprocessing, requests
 
 
 class ScrapeRequirements(Enum):
@@ -30,6 +28,11 @@ class Scrape:
 		self.scrape_results = dict()
 		self.sorted_results = dict()
 		self.scraped_total = 0
+		self.session = requests.session()
+		if self.arguments.web_username and self.arguments.web_password:
+			print("Setting Auth with username: " + str(self.arguments.web_username))
+			self.session.auth = (self.arguments.web_username, self.arguments.web_password)
+		urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 		manager = multiprocessing.Manager()
 
 	def main(self):
@@ -64,10 +67,7 @@ class Scrape:
 		results = list()
 		manual = ('java', '#', 'data:')
 		print("Scraping data from: " + str(url))
-		if self.arguments.web_username and self.arguments.web_password:
-			response, page_source = self.base.get_response(url, True, str(self.arguments.web_username), str(self.arguments.web_password))  # GET Request to retrieve page source
-		else:
-			response, page_source = self.base.get_response(url, True)  # GET Request to retrieve page source
+		response, page_source, self.session = self.base.session_get_response(self.session, url, True)
 		soup = BeautifulSoup(page_source, 'html.parser')
 		# print("URL: " + str(url))
 		

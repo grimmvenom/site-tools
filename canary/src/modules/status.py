@@ -9,7 +9,10 @@ grimm venom <grimmvenom@gmail.com>
 """
 
 from src.base.base import Base
-import multiprocessing
+import multiprocessing, requests, json
+import urllib3
+from http.client import responses
+from lxml.html import fromstring
 
 
 class Status:
@@ -18,7 +21,12 @@ class Status:
 		self.urls = self.arguments.urls
 		self.base = Base()
 		self.status_results = dict()
+		self.session = requests.session()
+		if self.arguments.web_username and self.arguments.web_password:
+			print("Setting Auth with username: " + str(self.arguments.web_username))
+			self.session.auth = (self.arguments.web_username, self.arguments.web_password)
 		multiprocessing.freeze_support()
+		urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 		
 	def main(self):
 		print("Checking URL Statuses")
@@ -45,30 +53,5 @@ class Status:
 		print("\n")
 	
 	def _verify(self, url):
-		response_data = dict()
-		# print([element_url, element_type, element_index])
-		response_data["url"] = str(url)
-		try:
-			if self.arguments.web_username and self.arguments.web_password:
-				response = self.base.get_response(url, False, str(self.arguments.web_username), str(self.arguments.web_password))
-			else:
-				response = self.base.get_response(url)
-			
-			response_data["status"] = int(response["status"])
-			try:
-				response_data["redirectedURL"] = response["redirectedURL"]
-			except:
-				pass
-			response_data["pageTitle"] = response["pageTitle"]
-			response_data["message"] = response["message"]
-		
-		# print(json.dumps(self.log[fkey][skey], indent=4, separators=(",", ":")))
-		except Exception as e:
-			response_data['status'] = "ERROR"
-			response_data['message'] = "Request Error"
-			response_data['pageTitle'] = "N/A"
-			print("Error: \n" + str(e))
-			print("\nFailure @: " + str(url))
-			print("\n")
-		# print([element_url, element_type, element_index, element_data])
+		response_data, session = self.base.session_get_response(self.session, url, False)
 		return {url: response_data}

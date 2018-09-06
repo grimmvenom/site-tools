@@ -12,6 +12,8 @@ grimm venom <grimmvenom@gmail.com>
 import json, multiprocessing, math, sys
 from multiprocessing import Pipe
 from src.base.base import Base
+import re, urllib3, requests
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
 class Verify:
@@ -20,6 +22,10 @@ class Verify:
 		self.log = log.copy()
 		self.base = Base()
 		self.unique_requests = list()
+		self.session = requests.session()
+		if self.arguments.web_username and self.arguments.web_password:
+			print("Setting Auth with username: " + str(self.arguments.web_username))
+			self.session.auth = (self.arguments.web_username, self.arguments.web_password)
 
 	def main(self):
 		self._unique_requests()
@@ -66,30 +72,6 @@ class Verify:
 								self.log[url_key][element_type][index]['pageTitle'] = response_data['pageTitle']
 	
 	def _verify(self, url):
-		response_data = dict()
-		# print([element_url, element_type, element_index])
-		try:
-			if self.arguments.web_username and self.arguments.web_password:
-				response = self.base.get_response(url, False, str(self.arguments.web_username), str(self.arguments.web_password))
-			else:
-				response = self.base.get_response(url)
-			
-			response_data["status"] = int(response["status"])
-			try:
-				response_data["redirectedURL"] = response["redirectedURL"]
-			except:
-				pass
-			response_data["pageTitle"] = response["pageTitle"]
-			response_data["message"] = response["message"]
-		
-			# print(json.dumps(self.log[fkey][skey], indent=4, separators=(",", ":")))
-		except Exception as e:
-			response_data['status'] = "ERROR"
-			response_data['message'] = "Request Error"
-			response_data['pageTitle'] = "N/A"
-			print("Error: \n" + str(e))
-			print("\nFailure @: " + str(url))
-			print("\n")
-		# print([element_url, element_type, element_index, element_data])
+		response_data, self.session = self.base.session_get_response(self.session, url, False)
 		return [url, response_data]
-		# self.log[url][element_type][element_index] = element_data
+		

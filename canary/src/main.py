@@ -13,6 +13,10 @@ grimm venom <grimmvenom@gmail.com>
 refactored:
 Dakota Carter <dakota22789@gmail.com>
 
+
+Test using:
+http://the-internet.herokuapp.com/
+http://automationpractice.com/index.php
 """
 
 from src.base.base import Base
