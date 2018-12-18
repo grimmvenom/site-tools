@@ -143,7 +143,11 @@ def parse_sitemap(file):
 	# Loop through all entries in sitemap.xml file
 	for info in root.findall('.//url'): # Test limited [0:6]
 		xml_url = info.find('.//loc').text
-		last_mod = info.find('.//lastmod').text
+		try:
+			last_mod = info.find('.//lastmod').text
+		except:
+			last_mod = str(date)
+			pass
 		try:
 			if "T" in last_mod: # If loastmod == date+time
 				last_mod = last_mod.split("T", 1)[0] # Strip the Time out
@@ -181,7 +185,7 @@ def manage_sitemap_db():
 				print(str(index) + ") - entry: " + str(entry) + " -- Not Found in DB")
 				print(entries[index])
 				print(str(data))
-				print('There is no url found for:  %s' % url)
+				# print('There is no url found for:  %s' % url)
 				try:
 					cur.execute("insert into " + table_name + "  values(?,?,?)", (url, last_mod, appended,))
 				except:
