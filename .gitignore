@@ -26,6 +26,10 @@ canary/src/modules/__init__\.py
 
 canary/build/
 
+<<<<<<< HEAD
 sitemap/logs/
 
 sitemap/output/
+=======
+canary/dist/Results/
+>>>>>>> d5e746c84dff6a1d34965b37282454b81551a8d3
