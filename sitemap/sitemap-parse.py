@@ -17,13 +17,6 @@ import xml.etree.ElementTree as ET
 from operator import itemgetter
 
 
-# Global Variables
-date = time.strftime("%m-%d-%y") # Date Format mm-dd-yyyy_Hour_Min
-Time = time.strftime("%H_%M")
-current_dir = os.path.dirname(os.path.realpath(__file__))
-parent_dir = os.path.abspath(os.path.join(current_dir, os.pardir))
-output_dir = current_dir + "/output/"
-
 def log_output(output_name):
 	log_dir = current_dir + "/logs"
 	if not os.path.exists(log_dir):  # Check if logs directory does not exist
@@ -49,26 +42,30 @@ def log_output(output_name):
 	sys.stdout = Tee(sys.stdout, pyout)
 
 
-# Define Arguments the Script will accept
-parser = argparse.ArgumentParser()
-parser.add_argument('-f', "-file", action='store', dest='file', required=True, help='Enter Input .xml file to parse and sort')
-parser.add_argument('-db', "-database", action='store', dest='database', required=True, help='Enter Database File to write information to. Typically <vendor>.db')
-parser.add_argument('-t', "-table", "-p", "-project", action='store', dest='table', required=True, help='Enter table name (<project>_<Environment>). Typically <applicationName>_<env>')
-arguments = parser.parse_args() # Parse through arguments added when the script is called
-files = [arguments.file] # List of Files to import as sitemap.xml
-
-if not "/" in arguments.database:
-	db = parent_dir + "/database/" + arguments.database.capitalize()
-else:
-	db = arguments.database
-
-if not db.endswith(".db"):
-	db = db + ".db"
-
-table_name = arguments.table
-
-if not table_name.endswith("_sitemap"):
-	table_name = table_name + "_sitemap"
+def get_arguments():
+	# Define Arguments the Script will accept
+	parser = argparse.ArgumentParser()
+	parser.add_argument('-f', "-file", action='append', dest='files', required=True, help='Enter Input .xml file to parse and sort')
+	parser.add_argument('-db', "-database", action='store', dest='database', required=True, help='Enter Database File to write information to. Typically <vendor>.db')
+	parser.add_argument('-t', "-table", "-p", "-project", action='store', dest='table', required=True, help='Enter table name (<project>_<Environment>). Typically <applicationName>_<env>')
+	arguments = parser.parse_args() # Parse through arguments added when the script is called
+	
+	if not arguments.database.endswith(".db"):
+		arguments.database = arguments.database + ".db"
+		
+	if not os.path.exists(arguments.database):
+		if os.path.exists(parent_dir + "/database/" + arguments.database.capitalize()):
+			arguments.database = parent_dir + "/database/" + arguments.database
+		else:
+			arguments.database =  current_dir + "/database/" + arguments.database.capitalize()
+			if not os.path.exists(os.path.dirname(os.path.realpath(arguments.database))):
+				print("Creating Database Directory")
+				os.makedirs(os.path.dirname(os.path.realpath(arguments.database)))
+			
+	if not arguments.table.endswith("_sitemap"):
+		arguments.table = arguments.table + "_sitemap"
+	arguments.table = arguments.table.replace('.', '_')
+	return arguments
 
 
 def clarify_domain(file, print_output=False):
@@ -168,17 +165,17 @@ def parse_sitemap(file):
 
 def manage_sitemap_db():
 	print(" ")
-	print("Checking for db: " + db)
-	print("Checking Table: " + table_name)
-	con = sqlite3.connect(db)
+	print("Checking for db: " + arguments.database)
+	print("Checking Table: " + arguments.table)
+	con = sqlite3.connect(arguments.database)
 	with con:
 		cur = con.cursor()
-		cur.execute("CREATE TABLE IF NOT EXISTS " + table_name + "(url TEXT, last_modified TEXT, appended TEXT)")
+		cur.execute("CREATE TABLE IF NOT EXISTS " + arguments.table + "(url TEXT, last_modified TEXT, appended TEXT)")
 		for index, entry in enumerate(entries):
 			url = str(entry[0])
 			last_mod = str(entry[1])
 			appended = str(date)
-			cur.execute("SELECT url,last_modified FROM " + table_name + " WHERE url = ?", (url,))
+			cur.execute("SELECT url,last_modified FROM " + arguments.table + " WHERE url = ?", (url,))
 			data = cur.fetchone()
 
 			if data is None:
@@ -187,7 +184,7 @@ def manage_sitemap_db():
 				print(str(data))
 				# print('There is no url found for:  %s' % url)
 				try:
-					cur.execute("insert into " + table_name + "  values(?,?,?)", (url, last_mod, appended,))
+					cur.execute("insert into " + arguments.table + "  values(?,?,?)", (url, last_mod, appended,))
 				except:
 					print("Issue Writing Entry to DB")
 					pass
@@ -200,7 +197,7 @@ def manage_sitemap_db():
 				print("data[1]: " + str(data[1] + " last_mod: " + str(last_mod)))
 				#print("Updating Last Modified Date")
 				try:
-					cur.execute("update " + table_name + " set last_modified=? , appended=?", (last_mod, appended))
+					cur.execute("update " + arguments.table + " set last_modified=? , appended=?", (last_mod, appended))
 				except:
 					print("Issue Updating Entry in DB")
 					pass
@@ -213,20 +210,29 @@ def manage_sitemap_db():
 	con.close()
 
 
+# Global Variables
+date = time.strftime("%m-%d-%y") # Date Format mm-dd-yyyy_Hour_Min
+Time = time.strftime("%H_%M")
+current_dir = os.path.dirname(os.path.realpath(__file__))
+parent_dir = os.path.abspath(os.path.join(current_dir, os.pardir))
+output_dir = current_dir + "/output/"
+
+arguments = get_arguments()
 log_output("Sitemap-parser-" + str(date) + "_" + str(Time))
 
-print("Database: " + str(db))
-print("Table: " + str(table_name))
-print("Files: " + str(files))
+
+print("Database: " + str(arguments.database))
+print("Table: " + str(arguments.table))
+print("Files: " + str(arguments.files))
 print(" ")
 
-if len(files) > 0:
-	for file in files:
+if len(arguments.files) > 0:
+	for file in arguments.files:
 		print("Checking " + file)
 		file = output_dir + file
 		entries = []
 		domain, site_root, page_path, page = clarify_domain(file)  # extract domain from sitemap
-		entries = parse_sitemap(file) # Sitemap extract urls and last modified
-		manage_sitemap_db() # Sitemap create DB
+		entries = parse_sitemap(file)  # Sitemap extract urls and last modified
+		manage_sitemap_db()  # Sitemap create DB
 
 
